@@ -1,4 +1,5 @@
-# conditional build
+#
+# Conditional build:
 #  --without initrd -- don't build initrd version
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
@@ -28,11 +29,11 @@ alternatywa dla pakietu raidtools.
 
 %package initrd
 Summary:	Tool for maintaining software RAID devices - initrd version
-Summary(pl):	Narzêdziê obs³ugi programowych macierzy RAID, wersja dla initrd
+Summary(pl):	Narzêdzie do obs³ugi programowych macierzy RAID, wersja dla initrd
 Group:		Base
 
 %description initrd
-Tool for maintaining software RAID devices - staticaly linked for
+Tool for maintaining software RAID devices - statically linked for
 initrd.
 
 %description initrd -l pl
@@ -70,6 +71,7 @@ ln -s mdadm $RPM_BUILD_ROOT%{_sbindir}/mdctl
 %{!?_without_initrd:ln -s initrd-mdadm $RPM_BUILD_ROOT%{_sbindir}/initrd-mdctl}
 
 gzip -9nf ANNOUNCE TODO
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
