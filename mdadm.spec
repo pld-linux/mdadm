@@ -5,15 +5,19 @@ Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
 Version:	1.0.1
-Release:	1
+Release:	2
 License:	GPL
 Group:		Base
 Source0:	http://www.cse.unsw.edu.au/~neilb/source/mdadm/%{name}-%{version}.tgz
+Source1:	%{name}.init
+Source2:	%{name}.sysconfig
 Patch0:		%{name}-BOOT.patch
+Patch1:		%{name}-dev0.patch
 %{?_with_initrd:BuildRequires:	dietlibc-static}
 BuildRequires:	groff
 Obsoletes:	mdctl
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+Requires(post): /sbin/chkconfig
 
 %define		_sbindir		/sbin
 
@@ -43,6 +47,7 @@ zlinkowane na potrzeby initrd.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{?_with_initrd:%{__make} CC="%{_arch}-dietlibc-gcc" CFLAGS="%{rpmcflags}" LDFLAGS="%{rpmldflags}" static}
@@ -57,7 +62,7 @@ zlinkowane na potrzeby initrd.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8},%{_sysconfdir}}
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8},%{_sysconfdir}/{rc.d/init.d,sysconfig}}
 
 %{?_with_initrd:install initrd-mdadm $RPM_BUILD_ROOT%{_sbindir}}
 install mdadm $RPM_BUILD_ROOT%{_sbindir}
@@ -70,9 +75,27 @@ install mdadm.conf-example $RPM_BUILD_ROOT%{_sysconfdir}/mdadm.conf
 ln -s mdadm $RPM_BUILD_ROOT%{_sbindir}/mdctl
 %{?_with_initrd:ln -s initrd-mdadm $RPM_BUILD_ROOT%{_sbindir}/initrd-mdctl}
 
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%post
+/sbin/chkconfig --add %{name}
+if [ -f /var/lock/subsys/mdadm ]; then
+        /etc/rc.d/init.d/mdadm restart 1>&2
+else
+        echo "Run \"/etc/rc.d/init.d/mdadm start\" to start RAID monitoring."
+fi
+
+%preun
+if [ "$1" = "0" ]; then
+        if [ -f /var/lock/subsys/mdadm ]; then
+                /etc/rc.d/init.d/mdadm stop 1>&2
+        fi
+        /sbin/chkconfig --del mdadm
+fi
 
 %files
 %defattr(644,root,root,755)
@@ -80,6 +103,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/*
 %attr(640,root,root) %config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/mdadm.conf
 %{_mandir}/man?/*
+%attr(754,root,root) /etc/rc.d/init.d/%{name}
+%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/sysconfig/%{name}
 
 %if %{?_with_initrd:1}%{!?_with_initrd:0}
 %files initrd
