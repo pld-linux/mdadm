@@ -1,20 +1,27 @@
 #
 # Conditional build:
-#  --without initrd -- build without initrd version
+%bcond_without	initrd		# don't build initrd version
+%bcond_without	uClibc		# link initrd version with static glibc instead of uClibc
 #
+%ifarch amd64
+%undefine	with_uClibc
+%endif
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
-Version:	1.3.0
-Release:	2
+Version:	1.8.0
+Release:	1
 License:	GPL
 Group:		Base
 Source0:	http://www.cse.unsw.edu.au/~neilb/source/mdadm/%{name}-%{version}.tgz
-# Source0-md5:	61186df5073fae32569bd4bb12f9da36
+# Source0-md5:	b14545c7209bcaeae01cd96e33879d67
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
-Patch0:		%{name}-BOOT.patch
-%{!?_without_initrd:BuildRequires:	dietlibc-static}
+Patch0:		%{name}-degraded.patch
+%if %{with initrd}
+%{!?with_uClibc:BuildRequires:	glibc-static}
+%{?with_uClibc:BuildRequires:	uClibc-static}
+%endif
 BuildRequires:	groff
 Obsoletes:	mdctl
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -43,16 +50,33 @@ initrd.
 
 %description initrd -l pl
 Narzêdzie do zarz±dzania programowymi macierzami RAID - statycznie
-zlinkowane na potrzeby initrd.
+skonsolidowane na potrzeby initrd.
 
 %prep
 %setup -q
 %patch0 -p1
 
 %build
-%{!?_without_initrd:%{__make} CC="%{_target_cpu}-dietlibc-gcc" CFLAGS="%{rpmcflags}" LDFLAGS="%{rpmldflags} -static"}
-%{!?_without_initrd:mv mdadm initrd-mdadm}
-%{!?_without_initrd:%{__make} clean}
+%if %{with initrd}
+%if %{with uClibc}
+%{__make} mdadm.uclibc \
+	UCLIBC_GCC="%{_target_cpu}-uclibc-gcc %{rpmcflags} %{rpmldflags} -static"
+mv -f mdadm.uclibc initrd-mdadm
+%{__make} clean
+%{_target_cpu}-uclibc-gcc -DUCLIBC %{rpmcflags} %{rpmldflags} -static \
+	 -o initrd-mdassemble mdassemble.c Assemble.c config.c dlink.c util.c
+%else
+%{__make} mdadm.static \
+	CC="%{__cc}" \
+	CFLAGS="%{rpmcflags} -D_GNU_SOURCE" \
+	LDFLAGS="%{rpmldflags}"
+mv -f mdadm.static initrd-mdadm
+%{__make} clean
+%{__cc} %{rpmcflags} %{rpmldflags} -static \
+	 -o initrd-mdassemble mdassemble.c Assemble.c config.c dlink.c util.c
+%endif
+%{__make} clean
+%endif
 
 %{__make} \
 	CC="%{__cc}" \
@@ -62,9 +86,14 @@ zlinkowane na potrzeby initrd.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8},%{_sysconfdir}/{rc.d/init.d,sysconfig}}
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8},/etc/{rc.d/init.d,sysconfig}}
 
-%{!?_without_initrd:install initrd-mdadm $RPM_BUILD_ROOT%{_sbindir}}
+%if %{with initrd}
+install initrd-mdadm $RPM_BUILD_ROOT%{_sbindir}
+install initrd-mdassemble $RPM_BUILD_ROOT%{_sbindir}
+ln -s initrd-mdadm $RPM_BUILD_ROOT%{_sbindir}/initrd-mdctl
+%endif
+
 install mdadm $RPM_BUILD_ROOT%{_sbindir}
 
 install *.5 $RPM_BUILD_ROOT%{_mandir}/man5
@@ -73,7 +102,6 @@ install *.8 $RPM_BUILD_ROOT%{_mandir}/man8
 install mdadm.conf-example $RPM_BUILD_ROOT%{_sysconfdir}/mdadm.conf
 
 ln -s mdadm $RPM_BUILD_ROOT%{_sbindir}/mdctl
-%{!?_without_initrd:ln -s initrd-mdadm $RPM_BUILD_ROOT%{_sbindir}/initrd-mdctl}
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
@@ -105,9 +133,10 @@ fi
 %{_mandir}/man?/*
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/sysconfig/%{name}
+%if %{with initrd}
+%exclude %{_sbindir}/initrd-*
 
-%if %{?_without_initrd:0}%{!?_without_initrd:1}
 %files initrd
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/initrd-mdadm
+%attr(755,root,root) %{_sbindir}/initrd-*
 %endif
