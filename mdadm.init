@@ -25,10 +25,7 @@ case "$1" in
 	# Start daemons.
 	if [ ! -f /var/lock/subsys/mdadm ]; then
 		msg_starting mdadm
-		busy
-		mdadm -Fs -m ${MDADM_EMAIL} ${MDADM_OPTS} &
-		# sorry, no way to detect failure (mdadm is not forking&&deataching)
-		deltext; ok
+		daemon mdadm --monitor --scan --daemonise -m ${MDADM_EMAIL} ${MDADM_OPTS}
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/mdadm
 	else
