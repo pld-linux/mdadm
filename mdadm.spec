@@ -127,12 +127,12 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc ANNOUNCE* TODO
+%doc ANNOUNCE* ChangeLog TODO
 %attr(755,root,root) %{_sbindir}/*
-%attr(640,root,root) %config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/mdadm.conf
+%attr(640,root,root) %config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/mdadm.conf
 %{_mandir}/man?/*
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
-%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/sysconfig/%{name}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/%{name}
 %if %{with initrd}
 %exclude %{_sbindir}/initrd-*
 
