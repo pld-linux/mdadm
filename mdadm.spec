@@ -17,7 +17,7 @@ Patch0:		%{name}-BOOT.patch
 BuildRequires:	groff
 Obsoletes:	mdctl
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-Requires(post): /sbin/chkconfig
+Requires(post):	/sbin/chkconfig
 
 %define		_sbindir		/sbin
 
