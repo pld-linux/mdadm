@@ -1,0 +1,66 @@
+diff -urN mdadm-1.6.0.org/util.c mdadm-1.6.0/util.c
+--- mdadm-1.6.0.org/util.c	2004-06-13 22:59:11.978928680 +0200
++++ mdadm-1.6.0/util.c	2004-06-13 23:04:57.650378632 +0200
+@@ -421,31 +422,6 @@
+     return 0;
+ }
+ 
+-int is_standard(char *dev)
+-{
+-	/* tests if dev is a "standard" md dev name.
+-	 * i.e if the last component is "/dNN" or "/mdNN",
+-	 * where NN is a string of digits 
+-	 */
+-	dev = strrchr(dev, '/');
+-	if (!dev)
+-		return 0;
+-	if (strncmp(dev, "/d",2)==0)
+-		dev += 2;
+-	else if (strncmp(dev, "/md", 3)==0)
+-		dev += 3;
+-	else
+-		return 0;
+-	if (!*dev)
+-		return 0;
+-	while (isdigit(*dev))
+-		dev++;
+-	if (*dev)
+-		return 0;
+-	return 1;
+-}
+-
+-
+ /*
+  * Find a block device with the right major/minor number.
+  * Avoid /dev/mdNN and /dev/md/dNN is possible
+@@ -476,6 +452,30 @@
+ 
+ #endif
+ 
++int is_standard(char *dev)
++{
++	/* tests if dev is a "standard" md dev name.
++	 * i.e if the last component is "/dNN" or "/mdNN",
++	 * where NN is a string of digits 
++	 */
++	dev = strrchr(dev, '/');
++	if (!dev)
++		return 0;
++	if (strncmp(dev, "/d",2)==0)
++		dev += 2;
++	else if (strncmp(dev, "/md", 3)==0)
++		dev += 3;
++	else
++		return 0;
++	if (!*dev)
++		return 0;
++	while (isdigit(*dev))
++		dev++;
++	if (*dev)
++		return 0;
++	return 1;
++}
++
+ unsigned long calc_sb_csum(mdp_super_t *super)
+ {
+         unsigned int  oldcsum = super->sb_csum;
