@@ -1,8 +1,7 @@
 #
 # Conditional build:
-#  --without initrd -- build without initrd version
+%bcond_without  initrd		# don't build initrd version
 #
-%bcond_without  initrd
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
@@ -14,7 +13,7 @@ Source0:	http://www.cse.unsw.edu.au/~neilb/source/mdadm/%{name}-%{version}.tgz
 # Source0-md5:	765286c4a22e36b70ce2f817f0c4647c
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
-%{!?without_initrd:BuildRequires:	uClibc-static}
+%{?with_initrd:BuildRequires:	uClibc-static}
 BuildRequires:	groff
 Obsoletes:	mdctl
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -50,7 +49,8 @@ skonsolidowane na potrzeby initrd.
 
 %build
 %if %{with initrd}
-%{__make} mdadm.uclibc UCLIBC_GCC="%{_target_cpu}-uclibc-gcc %{rpmcflags} %{rpmldflags} -static"
+%{__make} mdadm.uclibc \
+	UCLIBC_GCC="%{_target_cpu}-uclibc-gcc %{rpmcflags} %{rpmldflags} -static"
 mv mdadm.uclibc initrd-mdadm
 %{__make} clean
 %{_target_cpu}-uclibc-gcc -DUCLIBC %{rpmcflags} %{rpmldflags} -static \
