@@ -75,8 +75,8 @@ install mdadm.conf-example $RPM_BUILD_ROOT%{_sysconfdir}/mdadm.conf
 ln -s mdadm $RPM_BUILD_ROOT%{_sbindir}/mdctl
 %{?_with_initrd:ln -s initrd-mdadm $RPM_BUILD_ROOT%{_sbindir}/initrd-mdctl}
 
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
