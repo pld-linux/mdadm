@@ -4,15 +4,14 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
-Version:	1.0.1
-Release:	2
+Version:	1.1.0
+Release:	1
 License:	GPL
 Group:		Base
 Source0:	http://www.cse.unsw.edu.au/~neilb/source/mdadm/%{name}-%{version}.tgz
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Patch0:		%{name}-BOOT.patch
-Patch1:		%{name}-dev0.patch
 %{?_with_initrd:BuildRequires:	dietlibc-static}
 BuildRequires:	groff
 Obsoletes:	mdctl
@@ -46,8 +45,8 @@ zlinkowane na potrzeby initrd.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
+# FIXME
+# %patch0 -p1
 
 %build
 %{?_with_initrd:%{__make} CC="%{_arch}-dietlibc-gcc" CFLAGS="%{rpmcflags}" LDFLAGS="%{rpmldflags}" static}
@@ -99,7 +98,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc ANNOUNCE TODO
+%doc ANNOUNCE* TODO
 %attr(755,root,root) %{_sbindir}/*
 %attr(640,root,root) %config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/mdadm.conf
 %{_mandir}/man?/*
