@@ -9,16 +9,15 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
-Version:	1.6.0
-Release:	2
+Version:	1.7.0
+Release:	1
 License:	GPL
 Group:		Base
 Source0:	http://www.cse.unsw.edu.au/~neilb/source/mdadm/%{name}-%{version}.tgz
-# Source0-md5:	49b6f89709d95f103ca7c8fd83986c16
+# Source0-md5:	eb56af3d78cdc4f413bb6f0ec08c51d6
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
-Patch0:		%{name}-uclibc.patch
-Patch1:		%{name}-degraded.patch
+Patch0:		%{name}-degraded.patch
 %if %{with initrd}
 %{!?with_uClibc:BuildRequires:	glibc-static}
 %{?with_uClibc:BuildRequires:	uClibc-static}
@@ -56,7 +55,6 @@ skonsolidowane na potrzeby initrd.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
 %if %{with initrd}
