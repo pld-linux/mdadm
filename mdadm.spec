@@ -1,6 +1,6 @@
 #
 # Conditional build:
-%bcond_with	initrd		# don't build initrd version
+%bcond_without	initrd		# don't build initrd version
 %bcond_without	uClibc		# link initrd version with static glibc instead of uClibc
 #
 %ifarch amd64
@@ -18,6 +18,7 @@ Source0:	http://www.cse.unsw.edu.au/~neilb/source/mdadm/%{name}-%{version}.tgz
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Patch0:		%{name}-degraded.patch
+Patch1:		%{name}-mdassemble.patch
 %if %{with initrd}
 %{!?with_uClibc:BuildRequires:	glibc-static}
 %{?with_uClibc:BuildRequires:	uClibc-static}
@@ -55,6 +56,7 @@ skonsolidowane na potrzeby initrd.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %if %{with initrd}
@@ -64,7 +66,7 @@ skonsolidowane na potrzeby initrd.
 mv -f mdadm.uclibc initrd-mdadm
 %{__make} clean
 %{_target_cpu}-uclibc-gcc -DUCLIBC %{rpmcflags} %{rpmldflags} -static \
-	 -o initrd-mdassemble mdassemble.c Assemble.c config.c dlink.c util.c
+	 -o initrd-mdassemble mdassemble.c Assemble.c config.c dlink.c util.c super0.c super1.c
 %else
 %{__make} mdadm.static \
 	CC="%{__cc}" \
@@ -73,7 +75,7 @@ mv -f mdadm.uclibc initrd-mdadm
 mv -f mdadm.static initrd-mdadm
 %{__make} clean
 %{__cc} %{rpmcflags} %{rpmldflags} -static \
-	 -o initrd-mdassemble mdassemble.c Assemble.c config.c dlink.c util.c
+	 -o initrd-mdassemble mdassemble.c Assemble.c config.c dlink.c util.c super0.c super1.c
 %endif
 %{__make} clean
 %endif
