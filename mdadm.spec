@@ -43,7 +43,7 @@ initrd.
 
 %description initrd -l pl
 Narzêdzie do zarz±dzania programowymi macierzami RAID - statycznie
-zlinkowane na potrzeby initrd.
+skonsolidowane na potrzeby initrd.
 
 %prep
 %setup -q
