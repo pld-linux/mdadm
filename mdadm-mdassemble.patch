@@ -1,0 +1,23 @@
+--- mdadm-1.8.1/mdassemble.c.orig	2004-11-05 03:53:56.000000000 +0100
++++ mdadm-1.8.1/mdassemble.c	2005-01-08 15:27:21.245953800 +0100
+@@ -53,6 +53,20 @@
+ 	{ NULL, 0}
+ };
+ 
++mapping_t r5layout[] = {
++	{ "left-asymmetric", 0},
++	{ "right-asymmetric", 1},
++	{ "left-symmetric", 2},
++	{ "right-symmetric", 3},
++
++	{ "default", 2},
++	{ "la", 0},
++	{ "ra", 1},
++	{ "ls", 2},
++	{ "rs", 3},
++	{ NULL, 0}
++};
++
+ #ifndef MDASSEMBLE_AUTO
+ /* from mdadm.c */
+ int open_mddev(char *dev, int autof/*unused */)
