@@ -4,7 +4,7 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
-Version:	1.0.0
+Version:	1.0.1
 Release:	1
 License:	GPL
 Group:		Base
