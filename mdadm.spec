@@ -1,11 +1,12 @@
 #
 # Conditional build:
 #  --without initrd -- build without initrd version
+#
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
 Version:	1.3.0
-Release:	1
+Release:	2
 License:	GPL
 Group:		Base
 Source0:	http://www.cse.unsw.edu.au/~neilb/source/mdadm/%{name}-%{version}.tgz
