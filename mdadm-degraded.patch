@@ -1,21 +1,25 @@
---- mdadm-1.6.0/Assemble.c.orig	Fri Jun  4 08:18:28 2004
-+++ mdadm-1.6.0/Assemble.c	Tue Jul 13 10:33:52 2004
-@@ -253,14 +253,14 @@
+--- mdadm-1.8.1/Assemble.c.orig	2004-11-02 06:11:06.000000000 +0100
++++ mdadm-1.8.1/Assemble.c	2005-01-06 22:26:52.719398240 +0100
+@@ -253,18 +253,18 @@
  		 */
  
- 		if (!havesuper) {
+ 		if (!super) {
 -			fprintf(stderr, Name ": %s has no superblock - assembly aborted\n",
 +			fprintf(stderr, Name ": %s has no superblock - device ignored\n",
  				devname);
+ 			free(first_super);
 -			return 1;
 +			continue;
  		}
- 		if (compare_super(&first_super, &super)) {
+ 		st = tst; /* commit to this format, if haven't already */
+ 		if (st->ss->compare_super(&first_super, super)) {
 -			fprintf(stderr, Name ": superblock on %s doesn't match others - assembly aborted\n",
 +			fprintf(stderr, Name ": superblock on %s doesn't match others - device ignored\n",
  				devname);
+ 			free(super);
+ 			free(first_super);
 -			return 1;
 +			continue;
  		}
  
- 
+ 		/* looks like a good enough match to update the super block if needed */
