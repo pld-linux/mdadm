@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+# mdadm		This shell script takes care of starting and stopping mdadm.
+#
+# chkconfig:	2345 80 30
+# description:	RAID array monitoring
+#		
+# processname:  mdadm
+# config:	
+# pidfile:
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source oident configureation.
+if [ -f /etc/sysconfig/mdadm ] ; then
+	. /etc/sysconfig/mdadm
+fi
+
+[ -z "$MDADM_EMAIL" ] && MDADM_EMAIL="root@localhost"
+
+# See how we were called.
+case "$1" in
+  start)
+	# Start daemons.
+	if [ ! -f /var/lock/subsys/mdadm ]; then
+		msg_starting mdadm
+		busy
+		mdadm -Fs -m ${MDADM_EMAIL} ${MDADM_OPTS} &
+		# sorry, no way to detect failure (mdadm is not forking&&deataching)
+		deltext; ok
+		RETVAL=$?
+		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/mdadm
+	else
+		msg_Already_Running mdadm
+	fi
+	;;
+  stop)
+	# Stop daemons.
+	if [ -f /var/lock/subsys/mdadm ]; then
+		msg_stopping mdadm
+		killproc mdadm
+		rm -f /var/lock/subsys/mdadm >/dev/null 2>&1
+	else
+		msg_Not_Running mdadm
+		exit 1
+	fi	
+	;;
+  reload|restart)
+	$0 stop
+	$0 start
+	;;
+  status)
+	status mdadm
+	;;
+  *)
+	msg_Usage "$0 {start|stop|restart|status}"
+	exit 1
+esac
+
+exit $RETVAL
+
