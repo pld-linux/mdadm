@@ -1,19 +1,26 @@
 #
 # Conditional build:
-%bcond_without  initrd		# don't build initrd version
+%bcond_without	initrd		# don't build initrd version
+%bcond_without	uClibc		# link initrd version with static glibc instead of uClibc
 #
+%ifarch amd64
+%undefine	with_uClibc
+%endif
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
 Version:	1.5.0
-Release:	1
+Release:	2
 License:	GPL
 Group:		Base
 Source0:	http://www.cse.unsw.edu.au/~neilb/source/mdadm/%{name}-%{version}.tgz
 # Source0-md5:	765286c4a22e36b70ce2f817f0c4647c
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
-%{?with_initrd:BuildRequires:	uClibc-static}
+%if %{with initrd}
+%{!?with_uClibc:BuildRequires:	glibc-static}
+%{?with_uClibc:BuildRequires:	uClibc-static}
+%endif
 BuildRequires:	groff
 Obsoletes:	mdctl
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -49,13 +56,23 @@ skonsolidowane na potrzeby initrd.
 
 %build
 %if %{with initrd}
+%if %{with uClibc}
 %{__make} mdadm.uclibc \
 	UCLIBC_GCC="%{_target_cpu}-uclibc-gcc %{rpmcflags} %{rpmldflags} -static"
-mv mdadm.uclibc initrd-mdadm
+mv -f mdadm.uclibc initrd-mdadm
 %{__make} clean
 %{_target_cpu}-uclibc-gcc -DUCLIBC %{rpmcflags} %{rpmldflags} -static \
-	 -o mdassemble mdassemble.c Assemble.c config.c dlink.c util.c
-mv mdassemble initrd-mdassemble
+	 -o initrd-mdassemble mdassemble.c Assemble.c config.c dlink.c util.c
+%else
+%{__make} mdadm.static \
+	CC="%{__cc}" \
+	CFLAGS="%{rpmcflags} -D_GNU_SOURCE" \
+	LDFLAGS="%{rpmldflags}"
+mv -f mdadm.static initrd-mdadm
+%{__make} clean
+%{__cc} %{rpmcflags} %{rpmldflags} -static \
+	 -o initrd-mdassemble mdassemble.c Assemble.c config.c dlink.c util.c
+%endif
 %{__make} clean
 %endif
 
@@ -67,7 +84,7 @@ mv mdassemble initrd-mdassemble
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8},%{_sysconfdir}/{rc.d/init.d,sysconfig}}
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8},/etc/{rc.d/init.d,sysconfig}}
 
 %if %{with initrd}
 install initrd-mdadm $RPM_BUILD_ROOT%{_sbindir}
