@@ -9,6 +9,7 @@ Release:	2
 License:	GPL
 Group:		Base
 Source0:	http://www.cse.unsw.edu.au/~neilb/source/mdadm/%{name}-%{version}.tgz
+# Source0-md5:	cf8e2f4c2c77ced0fe54f87164fc3c8c
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Patch0:		%{name}-BOOT.patch
