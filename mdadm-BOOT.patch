@@ -1,15 +1,36 @@
-diff -ur mdctl/util.c mdctl-/util.c
---- mdctl/util.c	Thu Jul 26 07:30:28 2001
-+++ mdctl-/util.c	Mon Aug  6 19:01:03 2001
+diff -u mdadm-1.2.0/mdadm.h mdadm-1.2.0-/mdadm.h
+--- mdadm-1.2.0/mdadm.h	Tue Mar 11 03:29:58 2003
++++ mdadm-1.2.0-/mdadm.h	Thu May 22 22:06:13 2003
+@@ -29,7 +29,6 @@
+ 
+ #define	__USE_LARGEFILE64
+ #include	<unistd.h>
+-extern __off64_t lseek64 __P ((int __fd, __off64_t __offset, int __whence));
+ 
+ #include	<sys/types.h>
+ #include	<sys/stat.h>
+@@ -41,6 +40,8 @@
+ #include	<errno.h>
+ #include	<string.h>
+ 
++#define __KERNEL_STRICT_NAMES
++
+ #include	<linux/kdev_t.h>
+ /*#include	<linux/fs.h> */
+ #include	<sys/mount.h>
+Only in mdadm-1.2.0-: mdadm.h.orig
+diff -u mdadm-1.2.0/util.c mdadm-1.2.0-/util.c
+--- mdadm-1.2.0/util.c	Tue Feb 11 23:50:49 2003
++++ mdadm-1.2.0-/util.c	Thu May 22 22:09:03 2003
 @@ -30,6 +30,7 @@
- #include	"mdctl.h"
+ #include	"mdadm.h"
  #include	"md_p.h"
  #include	<sys/utsname.h>
 +#include	<dirent.h>
  
  /*
   * Parse a 128 bit uuid in 4 integers
-@@ -364,51 +365,78 @@
+@@ -369,62 +370,78 @@
  /*
   * convert a major/minor pair for a block device into a name in /dev, if possible.
   * On the first call, walk /dev collecting name.
@@ -20,17 +41,27 @@ diff -ur mdctl/util.c mdctl-/util.c
 -    char *name;
 -    struct devmap *next;
 -} *devlist = NULL;
--int devlist_ready = 0;
--
--#define  __USE_XOPEN_EXTENDED
--#include <ftw.h>
- 
-+int devlist_ready = 0;
++
+ int devlist_ready = 0;
 +char **devlist[256];
  
--int add_dev(const char *name, const struct stat *stb, int flag, struct FTW *s)
+-#ifdef UCLIBC
+-char *map_dev(int major, int minor)
 +void collect_devs(const char *name)
  {
+-#if 0
+-	fprintf(stderr, "Warning - fail to map %d,%d to a device name\n",
+-		major, minor);
+-#endif
+-	return NULL;
+-}
+-#else
+-#define  __USE_XOPEN_EXTENDED
+-#include <ftw.h>
+-
+-
+-int add_dev(const char *name, const struct stat *stb, int flag, struct FTW *s)
+-{
 -    if ((stb->st_mode&S_IFMT)== S_IFBLK) {
 -	char *n = strdup(name);
 -	struct devmap *dm = malloc(sizeof(*dm));
@@ -114,13 +145,14 @@ diff -ur mdctl/util.c mdctl-/util.c
 +	    return NULL;
  }
  
+-#endif
 -
  int calc_sb_csum(mdp_super_t *super)
  {
          unsigned int  oldcsum = super->sb_csum;
-@@ -424,3 +452,14 @@
- 	super->sb_csum = oldcsum;
- 	return csum;
+@@ -525,3 +542,14 @@
+ 	if (strncmp(name, "/dev/.tmp.md", 12)==0)
+ 		unlink(name);
  }
 +
 +#ifdef __UCLIBC__
@@ -133,23 +165,5 @@ diff -ur mdctl/util.c mdctl-/util.c
 +	return res;
 +}
 +#endif
-diff -ur mdctl/mdctl.h mdctl-/mdctl.h
---- mdctl/mdadm.h	Tue Jun 19 01:56:53 2001
-+++ mdctl-/mdadm.h	Fri Mar 15 14:01:40 2002
-@@ -29,7 +29,6 @@
- 
- #define	__USE_LARGEFILE64
- #include	<unistd.h>
--extern __off64_t lseek64 __P ((int __fd, __off64_t __offset, int __whence));
- 
- #include	<sys/types.h>
- #include	<sys/stat.h>
-@@ -41,6 +40,8 @@
- #include	<errno.h>
- #include	<string.h>
- 
-+#define __KERNEL_STRICT_NAMES
-+
- #include	<linux/kdev_t.h>
- #include	<linux/fs.h>
- #include	<sys/ioctl.h>
+Only in mdadm-1.2.0-: util.c.orig
+Only in mdadm-1.2.0-: util.c.rej
