@@ -83,17 +83,17 @@ rm -rf $RPM_BUILD_ROOT
 %post
 /sbin/chkconfig --add %{name}
 if [ -f /var/lock/subsys/mdadm ]; then
-        /etc/rc.d/init.d/mdadm restart 1>&2
+	/etc/rc.d/init.d/mdadm restart 1>&2
 else
-        echo "Run \"/etc/rc.d/init.d/mdadm start\" to start RAID monitoring."
+	echo "Run \"/etc/rc.d/init.d/mdadm start\" to start RAID monitoring."
 fi
 
 %preun
 if [ "$1" = "0" ]; then
-        if [ -f /var/lock/subsys/mdadm ]; then
-                /etc/rc.d/init.d/mdadm stop 1>&2
-        fi
-        /sbin/chkconfig --del mdadm
+	if [ -f /var/lock/subsys/mdadm ]; then
+		/etc/rc.d/init.d/mdadm stop 1>&2
+	fi
+	/sbin/chkconfig --del mdadm
 fi
 
 %files
