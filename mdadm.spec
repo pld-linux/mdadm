@@ -9,12 +9,12 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
-Version:	1.7.0
+Version:	1.8.0
 Release:	1
 License:	GPL
 Group:		Base
 Source0:	http://www.cse.unsw.edu.au/~neilb/source/mdadm/%{name}-%{version}.tgz
-# Source0-md5:	eb56af3d78cdc4f413bb6f0ec08c51d6
+# Source0-md5:	b14545c7209bcaeae01cd96e33879d67
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Patch0:		%{name}-degraded.patch
