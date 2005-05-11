@@ -3,7 +3,7 @@
 %bcond_without	initrd		# don't build initrd version
 %bcond_without	uClibc		# link initrd version with static glibc instead of uClibc
 #
-%ifarch amd64
+%ifarch %{x8664}
 %undefine	with_uClibc
 %endif
 Summary:	Tool for creating and maintaining software RAID devices
@@ -18,14 +18,15 @@ Source0:	http://www.cse.unsw.edu.au/~neilb/source/mdadm/%{name}-%{version}.tgz
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Patch0:		%{name}-degraded.patch
+BuildRequires:	groff
+BuildRequires:	rpmbuild(macros) >= 1.213
 %if %{with initrd}
 %{!?with_uClibc:BuildRequires:	glibc-static}
 %{?with_uClibc:BuildRequires:	uClibc-static}
 %endif
-BuildRequires:	groff
+Requires(post,preun):	/sbin/chkconfig
 Obsoletes:	mdctl
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-Requires(post):	/sbin/chkconfig
 
 %define		_sbindir		/sbin
 
