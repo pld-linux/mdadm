@@ -24,6 +24,7 @@ BuildRequires:	rpmbuild(macros) >= 1.213
 %if %{with initrd}
 %{!?with_uClibc:BuildRequires:	glibc-static}
 %{?with_uClibc:BuildRequires:	uClibc-static}
+Requires:	%{name}-initrd = %{epoch}:%{version}-%{release}
 %endif
 Requires(post,preun):	/sbin/chkconfig
 Obsoletes:	mdctl
