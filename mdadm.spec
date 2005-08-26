@@ -1,6 +1,6 @@
 #
 # Conditional build:
-%bcond_without	initrd		# don't build initrd version
+%bcond_with	initrd		# don't build initrd version
 %bcond_without	uClibc		# link initrd version with static glibc instead of uClibc
 #
 %ifarch amd64
@@ -9,16 +9,17 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
-Version:	1.8.1
-Release:	1
+Version:	2.0
+Release:	0.1
 License:	GPL
 Group:		Base
-Source0:	http://www.cse.unsw.edu.au/~neilb/source/mdadm/%{name}-%{version}.tgz
-# Source0-md5:	d6298c34590334cad3b951bc590e4007
+Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/mdadm-2.0.tar.bz2
+# Source0-md5:	802f301ea67db14773f49d6bed4f2411
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
-Patch0:		%{name}-degraded.patch
-Patch1:		%{name}-mdassemble.patch
+#Patch0:		%{name}-degraded.patch
+#Patch1:		%{name}-mdassemble.patch
+URL:		http://www.kernel.org/pub/linux/utils/raid/mdadm/
 %if %{with initrd}
 %{!?with_uClibc:BuildRequires:	glibc-static}
 %{?with_uClibc:BuildRequires:	uClibc-static}
@@ -55,8 +56,8 @@ skonsolidowane na potrzeby initrd.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
+#%patch0 -p1
+#%patch1 -p1
 
 %build
 %if %{with initrd}
