@@ -13,7 +13,7 @@ Version:	1.12.0
 Release:	2
 License:	GPL
 Group:		Base
-Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tgz
+Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
 # Source0-md5:	4de899ddb1ede1d2cafd183794874ce1
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
