@@ -66,8 +66,8 @@ skonsolidowane na potrzeby initrd.
 	UCLIBC_GCC="%{_target_cpu}-uclibc-gcc %{rpmcflags} %{rpmldflags} -static"
 mv -f mdadm.uclibc initrd-mdadm
 %{__make} clean
-%{_target_cpu}-uclibc-gcc -DUCLIBC %{rpmcflags} %{rpmldflags} -static \
-	 -o initrd-mdassemble mdassemble.c Assemble.c config.c dlink.c util.c
+%{_target_cpu}-uclibc-gcc -DUCLIBC -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -static \
+	 -o initrd-mdassemble mdassemble.c Assemble.c config.c dlink.c util.c super0.c super1.c
 %else
 %{__make} mdadm.static \
 	CC="%{__cc}" \
@@ -75,8 +75,8 @@ mv -f mdadm.uclibc initrd-mdadm
 	LDFLAGS="%{rpmldflags}"
 mv -f mdadm.static initrd-mdadm
 %{__make} clean
-%{__cc} %{rpmcflags} %{rpmldflags} -static \
-	 -o initrd-mdassemble mdassemble.c Assemble.c config.c dlink.c util.c
+%{__cc} -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -static \
+	 -o initrd-mdassemble mdassemble.c Assemble.c config.c dlink.c util.c super0.c super1.c
 %endif
 %{__make} clean
 %endif
