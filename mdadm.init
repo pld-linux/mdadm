@@ -4,9 +4,9 @@
 #
 # chkconfig:	2345 80 30
 # description:	RAID array monitoring
-#		
+#
 # processname:	mdadm
-# config:	
+# config:
 # pidfile:
 
 # Source function library.
@@ -41,7 +41,7 @@ case "$1" in
 		rm -f /var/lock/subsys/mdadm >/dev/null 2>&1
 	else
 		msg_not_running mdadm
-	fi	
+	fi
 	;;
   restart|force-reload)
 	$0 stop
