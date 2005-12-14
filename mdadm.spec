@@ -9,12 +9,12 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
-Version:	2.1
+Version:	2.2
 Release:	1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
-# Source0-md5:	d0d80386186dc274ce0319651251de2b
+# Source0-md5:	c8df672f809aa4a43a88a2516d421d6e
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Patch0:		%{name}-degraded.patch
