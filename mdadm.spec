@@ -3,14 +3,14 @@
 %bcond_without	initrd		# don't build initrd version
 %bcond_without	uClibc		# link initrd version with static glibc instead of uClibc
 #
-%ifarch %{x8664}
+%ifarch ppc %{x8664}
 %undefine	with_uClibc
 %endif
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
 Version:	2.2
-Release:	2
+Release:	3
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
