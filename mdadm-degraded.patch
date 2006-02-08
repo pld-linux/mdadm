@@ -1,7 +1,7 @@
-diff -urN mdadm-2.0.org/Assemble.c mdadm-2.0/Assemble.c
---- mdadm-2.0.org/Assemble.c	2005-08-15 08:31:57.000000000 +0200
-+++ mdadm-2.0/Assemble.c	2005-09-04 00:25:53.575606024 +0200
-@@ -262,18 +262,15 @@
+diff -ur mdadm-2.3.1/Assemble.c mdadm-2.3.1.new/Assemble.c
+--- mdadm-2.3.1/Assemble.c	2006-01-25 07:01:10.000000000 +0000
++++ mdadm-2.3.1.new/Assemble.c	2006-02-08 15:05:42.000000000 +0000
+@@ -261,20 +261,17 @@
  		 */
  
  		if (!super) {
@@ -12,6 +12,8 @@ diff -urN mdadm-2.0.org/Assemble.c mdadm-2.0/Assemble.c
 -			return 1;
 +			continue;
  		}
+ 
+ 
  		st = tst; /* commit to this format, if haven't already */
  		if (st->ss->compare_super(&first_super, super)) {
 -			fprintf(stderr, Name ": superblock on %s doesn't match others - assembly aborted\n",
