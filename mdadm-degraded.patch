@@ -1,7 +1,6 @@
-diff -ur mdadm-2.3.1/Assemble.c mdadm-2.3.1.new/Assemble.c
---- mdadm-2.3.1/Assemble.c	2006-01-25 07:01:10.000000000 +0000
-+++ mdadm-2.3.1.new/Assemble.c	2006-02-08 15:05:42.000000000 +0000
-@@ -261,20 +261,17 @@
+--- mdadm-2.5.1/Assemble.c	2006-06-02 08:54:03.000000000 +0200
++++ mdadm-2.5.1.new/Assemble.c	2006-06-17 11:36:33.161117670 +0200
+@@ -313,10 +313,9 @@
  		 */
  
  		if (!super) {
@@ -13,9 +12,11 @@ diff -ur mdadm-2.3.1/Assemble.c mdadm-2.3.1.new/Assemble.c
 +			continue;
  		}
  
- 
- 		st = tst; /* commit to this format, if haven't already */
- 		if (st->ss->compare_super(&first_super, super)) {
+ 		if (st == NULL)
+@@ -354,11 +353,9 @@
+ 					}
+ 				}
+ 			}
 -			fprintf(stderr, Name ": superblock on %s doesn't match others - assembly aborted\n",
 +			fprintf(stderr, Name ": superblock on %s doesn't match others - device ignored\n",
  				devname);
@@ -25,4 +26,4 @@ diff -ur mdadm-2.3.1/Assemble.c mdadm-2.3.1.new/Assemble.c
 +			continue;
  		}
  
- 		/* looks like a good enough match to update the super block if needed */
+ 		tmpdev->used = 1;
