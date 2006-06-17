@@ -1,6 +1,8 @@
 #
+# TODO: fix building with initrd
+#
 # Conditional build:
-%bcond_without	initrd		# don't build initrd version
+%bcond_with	initrd		# don't build initrd version
 %bcond_without	uClibc		# link initrd version with static glibc instead of uClibc
 #
 %ifarch ppc %{x8664}
@@ -9,12 +11,12 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
-Version:	2.4
-Release:	1
+Version:	2.5.1
+Release:	0.1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
-# Source0-md5:	3f82d45b8d2b08e3c6953d5808dc64ba
+# Source0-md5:	62bc0d8e21116f34bb5c2060eaad7502
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Patch0:		%{name}-degraded.patch
