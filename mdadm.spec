@@ -1,13 +1,8 @@
 #
-# TODO: fix building with initrd
-#
 # Conditional build:
-%bcond_with	initrd		# don't build initrd version
+%bcond_without	initrd		# don't build initrd version
 %bcond_without	uClibc		# link initrd version with static glibc instead of uClibc
 #
-%ifarch ppc %{x8664}
-%undefine	with_uClibc
-%endif
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
