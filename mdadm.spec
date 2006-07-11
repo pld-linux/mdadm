@@ -15,6 +15,7 @@ Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Patch0:		%{name}-degraded.patch
+Patch1:		%{name}-fix.patch
 URL:		http://www.kernel.org/pub/linux/utils/raid/mdadm/
 BuildRequires:	groff
 BuildRequires:	rpmbuild(macros) >= 1.213
@@ -56,6 +57,7 @@ skonsolidowane na potrzeby initrd.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %if %{with initrd}
