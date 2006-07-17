@@ -21,7 +21,13 @@ BuildRequires:	groff
 BuildRequires:	rpmbuild(macros) >= 1.213
 %if %{with initrd}
 %{!?with_uClibc:BuildRequires:	glibc-static}
-%{?with_uClibc:BuildRequires:	uClibc-static}
+%if %{with uClibc}
+%ifarch ppc
+BuildRequires:	uClibc-static >= 2:0.9.29
+%else
+BuildRequires:	uClibc-static
+%endif
+%endif
 Requires:	%{name}-initrd = %{epoch}:%{version}-%{release}
 %endif
 Requires(post,preun):	/sbin/chkconfig
