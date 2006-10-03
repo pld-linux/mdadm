@@ -12,7 +12,7 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-# Source oident configureation.
+# Source mdadm configuration.
 if [ -f /etc/sysconfig/mdadm ]; then
 	. /etc/sysconfig/mdadm
 fi
