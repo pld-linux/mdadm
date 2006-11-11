@@ -7,7 +7,7 @@ Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
 Version:	2.5.6
-Release:	0.1
+Release:	1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
@@ -75,7 +75,7 @@ mv -f mdadm.uclibc initrd-mdadm
 %{_target_cpu}-uclibc-gcc -DMDASSEMBLE %{rpmcflags} %{rpmldflags} \
 	-DHAVE_STDINT_H -o sha1.o -c sha1.c
 %{_target_cpu}-uclibc-gcc -DUCLIBC -DMDASSEMBLE %{rpmcflags} %{rpmldflags} \
-	-static -o initrd-mdassemble mdassemble.c Assemble.c config.c dlink.c \
+	-static -o initrd-mdassemble mdassemble.c Assemble.c Manage.c config.c dlink.c \
 	util.c super0.c super1.c sha1.o
 %else
 %{__make} mdadm.static \
@@ -87,7 +87,7 @@ mv -f mdadm.static initrd-mdadm
 %{__cc} -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -DHAVE_STDINT_H \
 	-o sha1.o -c sha1.c
 %{__cc} -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -static \
-	-o initrd-mdassemble mdassemble.c Assemble.c config.c dlink.c \
+	-o initrd-mdassemble mdassemble.c Assemble.c Manage.c config.c dlink.c \
 	util.c super0.c super1.c sha1.o
 %endif
 %{__make} clean
