@@ -6,12 +6,12 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
-Version:	2.5.3
-Release:	0.1
+Version:	2.6
+Release:	2
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
-# Source0-md5:	9ca780fbb2002e935ba5f7a21e50ab66
+# Source0-md5:	e5d87884da6f80a68d94cff5a5bebd82
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Patch0:		%{name}-degraded.patch
@@ -21,13 +21,7 @@ BuildRequires:	groff
 BuildRequires:	rpmbuild(macros) >= 1.213
 %if %{with initrd}
 %{!?with_uClibc:BuildRequires:	glibc-static}
-%if %{with uClibc}
-%ifarch ppc
-BuildRequires:	uClibc-static >= 2:0.9.29
-%else
-BuildRequires:	uClibc-static
-%endif
-%endif
+%{?with_uClibc:BuildRequires:	uClibc-static}
 Requires:	%{name}-initrd = %{epoch}:%{version}-%{release}
 %endif
 Requires(post,preun):	/sbin/chkconfig
@@ -75,7 +69,7 @@ mv -f mdadm.uclibc initrd-mdadm
 %{_target_cpu}-uclibc-gcc -DMDASSEMBLE %{rpmcflags} %{rpmldflags} \
 	-DHAVE_STDINT_H -o sha1.o -c sha1.c
 %{_target_cpu}-uclibc-gcc -DUCLIBC -DMDASSEMBLE %{rpmcflags} %{rpmldflags} \
-	-static -o initrd-mdassemble mdassemble.c Assemble.c config.c dlink.c \
+	-static -o initrd-mdassemble mdassemble.c Assemble.c Manage.c config.c dlink.c \
 	util.c super0.c super1.c sha1.o
 %else
 %{__make} mdadm.static \
@@ -87,7 +81,7 @@ mv -f mdadm.static initrd-mdadm
 %{__cc} -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -DHAVE_STDINT_H \
 	-o sha1.o -c sha1.c
 %{__cc} -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -static \
-	-o initrd-mdassemble mdassemble.c Assemble.c config.c dlink.c \
+	-o initrd-mdassemble mdassemble.c Assemble.c Manage.c config.c dlink.c \
 	util.c super0.c super1.c sha1.o
 %endif
 %{__make} clean
