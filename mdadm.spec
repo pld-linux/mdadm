@@ -7,7 +7,7 @@ Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
 Name:		mdadm
 Version:	2.6
-Release:	1
+Release:	2
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
@@ -21,13 +21,7 @@ BuildRequires:	groff
 BuildRequires:	rpmbuild(macros) >= 1.213
 %if %{with initrd}
 %{!?with_uClibc:BuildRequires:	glibc-static}
-%if %{with uClibc}
-%ifarch ppc
-BuildRequires:	uClibc-static >= 2:0.9.29
-%else
-BuildRequires:	uClibc-static
-%endif
-%endif
+%{?with_uClibc:BuildRequires:	uClibc-static}
 Requires:	%{name}-initrd = %{epoch}:%{version}-%{release}
 %endif
 Requires(post,preun):	/sbin/chkconfig
