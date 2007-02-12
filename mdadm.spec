@@ -4,7 +4,7 @@
 %bcond_without	uClibc		# link initrd version with static glibc instead of uClibc
 #
 Summary:	Tool for creating and maintaining software RAID devices
-Summary(pl):	Narzêdzie do tworzenia i obs³ugi programowych macierzy RAID
+Summary(pl.UTF-8):   NarzÄ™dzie do tworzenia i obsÅ‚ugi programowych macierzy RAID
 Name:		mdadm
 Version:	2.6
 Release:	1
@@ -42,22 +42,22 @@ This package includes tool you need to set up and maintain a software
 RAID device under Linux. It's thought as an alternative to raidtools
 package.
 
-%description -l pl
-Pakiet ten zawiera narzêdzie potrzebne do tworzenia i obs³ugi
-programowych macierzy RAID. Program ten jest pomy¶lany jako
+%description -l pl.UTF-8
+Pakiet ten zawiera narzÄ™dzie potrzebne do tworzenia i obsÅ‚ugi
+programowych macierzy RAID. Program ten jest pomyÅ›lany jako
 alternatywa dla pakietu raidtools.
 
 %package initrd
 Summary:	Tool for maintaining software RAID devices - initrd version
-Summary(pl):	Narzêdzie do obs³ugi programowych macierzy RAID, wersja dla initrd
+Summary(pl.UTF-8):   NarzÄ™dzie do obsÅ‚ugi programowych macierzy RAID, wersja dla initrd
 Group:		Base
 
 %description initrd
 Tool for maintaining software RAID devices - statically linked for
 initrd.
 
-%description initrd -l pl
-Narzêdzie do zarz±dzania programowymi macierzami RAID - statycznie
+%description initrd -l pl.UTF-8
+NarzÄ™dzie do zarzÄ…dzania programowymi macierzami RAID - statycznie
 skonsolidowane na potrzeby initrd.
 
 %prep
