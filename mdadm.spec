@@ -1,13 +1,13 @@
 #
 # Conditional build:
 %bcond_without	initrd		# don't build initrd version
-%bcond_without	uClibc		# link initrd version with static glibc instead of uClibc
+%bcond_without	diet		# link initrd version with static glibc instead of dietlibc
 #
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
 Version:	2.6.1
-Release:	1
+Release:	2
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
@@ -20,13 +20,9 @@ URL:		http://www.kernel.org/pub/linux/utils/raid/mdadm/
 BuildRequires:	groff
 BuildRequires:	rpmbuild(macros) >= 1.213
 %if %{with initrd}
-%{!?with_uClibc:BuildRequires:	glibc-static}
-%if %{with uClibc}
-%ifarch ppc
-BuildRequires:	uClibc-static >= 2:0.9.29
-%else
-BuildRequires:	uClibc-static
-%endif
+%{!?with_diet:BuildRequires:	glibc-static}
+%if %{with deit}
+BuildRequires:	dietlibc-static
 %endif
 Requires:	%{name}-initrd = %{epoch}:%{version}-%{release}
 %endif
@@ -62,19 +58,20 @@ skonsolidowane na potrzeby initrd.
 
 %prep
 %setup -q
-%patch0 -p1
+#%patch0 -p1
 %patch1 -p1
 
 %build
 %if %{with initrd}
-%if %{with uClibc}
-%{__make} mdadm.uclibc \
-	UCLIBC_GCC="%{_target_cpu}-uclibc-gcc %{rpmcflags} %{rpmldflags} -static"
-mv -f mdadm.uclibc initrd-mdadm
+%if %{with diet}
+%{__make} mdadm \
+	CC="diet %{__cc} %{rpmcflags} %{rpmldflags} -static" \
+	CWFLAGS="-Wall"
+mv -f mdadm initrd-mdadm
 %{__make} clean
-%{_target_cpu}-uclibc-gcc -DUCLIBC -DMDASSEMBLE %{rpmcflags} %{rpmldflags} \
+diet %{__cc}  -DUCLIBC -DMDASSEMBLE %{rpmcflags} %{rpmldflags} \
 	-DHAVE_STDINT_H -o sha1.o -c sha1.c
-%{_target_cpu}-uclibc-gcc -DUCLIBC -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -static \
+diet %{__cc} -DUCLIBC -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -static \
 	-o initrd-mdassemble mdassemble.c Assemble.c Manage.c config.c dlink.c \
 	util.c super0.c super1.c sha1.o
 %else
