@@ -1,0 +1,1 @@
+- Switch to dietlibc; mdassemble works with it on x86_64.
