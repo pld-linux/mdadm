@@ -47,9 +47,7 @@ condrestart() {
 		stop
 		start
 	else
-		if [ $1 -ne 0 ]; then
-			msg_not_running mdadm
-		fi
+		msg_not_running mdadm
 		RETVAL=$1
 	fi
 }
