@@ -25,8 +25,10 @@ BuildRequires:	dietlibc-static
 %endif
 Requires:	%{name}-initrd = %{epoch}:%{version}-%{release}
 %endif
+BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
 Requires:	/sbin/chkconfig
+Requires:	rc-scripts >= 0.4.0.20
 Obsoletes:	mdctl
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -121,17 +123,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/chkconfig --add %{name}
-if [ -f /var/lock/subsys/mdadm ]; then
-	/etc/rc.d/init.d/mdadm restart 1>&2
-else
-	echo "Run \"/etc/rc.d/init.d/mdadm start\" to start RAID monitoring."
-fi
+%service mdadm restart "RAID monitoring"
 
 %preun
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/mdadm ]; then
-		/etc/rc.d/init.d/mdadm stop 1>&2
-	fi
+	%service mdadm stop
 	/sbin/chkconfig --del mdadm
 fi
 
