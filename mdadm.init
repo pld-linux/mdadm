@@ -19,10 +19,7 @@ fi
 
 [ -z "$MDADM_EMAIL" ] && MDADM_EMAIL="root@localhost"
 
-RETVAL=0
-# See how we were called.
-case "$1" in
-  start)
+start() {
 	# Start daemons.
 	if [ ! -f /var/lock/subsys/mdadm ]; then
 		msg_starting mdadm
@@ -32,8 +29,9 @@ case "$1" in
 	else
 		msg_already_running mdadm
 	fi
-	;;
-  stop)
+}
+
+stop() {
 	# Stop daemons.
 	if [ -f /var/lock/subsys/mdadm ]; then
 		msg_stopping mdadm
@@ -42,11 +40,20 @@ case "$1" in
 	else
 		msg_not_running mdadm
 	fi
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+  	stop
 	;;
   restart|force-reload)
-	$0 stop
-	$0 start
-	exit $?
+	stop
+	start
 	;;
   status)
 	status mdadm
