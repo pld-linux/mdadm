@@ -23,7 +23,7 @@ start() {
 	# Start daemons.
 	if [ ! -f /var/lock/subsys/mdadm ]; then
 		msg_starting mdadm
-		daemon mdadm --monitor --scan --daemonise -m ${MDADM_EMAIL} ${MDADM_OPTS}
+		daemon mdadm --monitor --scan --daemonise --pid-file /var/run/mdadm.pid -m ${MDADM_EMAIL} ${MDADM_OPTS}
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/mdadm
 	else
@@ -35,7 +35,7 @@ stop() {
 	# Stop daemons.
 	if [ -f /var/lock/subsys/mdadm ]; then
 		msg_stopping mdadm
-		killproc mdadm
+		killproc --pidfile /var/run/mdadm.pid mdadm
 		rm -f /var/lock/subsys/mdadm >/dev/null 2>&1
 	else
 		msg_not_running mdadm
