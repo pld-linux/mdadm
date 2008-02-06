@@ -1,7 +1,7 @@
 #
 # Conditional build:
 %bcond_without	initrd		# don't build initrd version
-%bcond_without	diet		# link initrd version with static glibc instead of dietlibc
+%bcond_without	dietlibc	# link initrd version with static glibc instead of dietlibc
 #
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
@@ -19,8 +19,8 @@ URL:		http://www.kernel.org/pub/linux/utils/raid/mdadm/
 BuildRequires:	groff
 BuildRequires:	rpmbuild(macros) >= 1.213
 %if %{with initrd}
-%{!?with_diet:BuildRequires:	glibc-static}
-%if %{with diet}
+%{!?with_dietlibc:BuildRequires:	glibc-static}
+%if %{with dietlibc}
 BuildRequires:	dietlibc-static
 %endif
 Requires:	%{name}-initrd = %{epoch}:%{version}-%{release}
@@ -63,7 +63,7 @@ skonsolidowane na potrzeby initrd.
 
 %build
 %if %{with initrd}
-%if %{with diet}
+%if %{with dietlibc}
 %{__make} mdadm \
 	CC="diet %{__cc} %{rpmcflags} %{rpmldflags} -static" \
 	CWFLAGS="-Wall"
