@@ -7,7 +7,7 @@ Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
 Version:	2.6.4
-Release:	2
+Release:	3
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
@@ -69,11 +69,11 @@ skonsolidowane na potrzeby initrd.
 	CWFLAGS="-Wall"
 mv -f mdadm initrd-mdadm
 %{__make} clean
-diet %{__cc}  -DUCLIBC -DMDASSEMBLE %{rpmcflags} %{rpmldflags} \
+diet %{__cc}  -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} \
 	-DHAVE_STDINT_H -o sha1.o -c sha1.c
-diet %{__cc} -DUCLIBC -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -static \
+diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -static \
 	-o initrd-mdassemble mdassemble.c Assemble.c Manage.c config.c dlink.c \
-	util.c super0.c super1.c sha1.o
+	mdopen.c mdstat.c util.c super0.c super1.c sha1.o
 %else
 %{__make} mdadm.static \
 	CC="%{__cc}" \
@@ -81,11 +81,11 @@ diet %{__cc} -DUCLIBC -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -static \
 	LDFLAGS="%{rpmldflags}"
 mv -f mdadm.static initrd-mdadm
 %{__make} clean
-%{__cc} -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -DHAVE_STDINT_H \
+%{__cc} -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -DHAVE_STDINT_H \
 	-o sha1.o -c sha1.c
-%{__cc} -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -DHAVE_STDINT_H -static \
+%{__cc} -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -DHAVE_STDINT_H -static \
 	-o initrd-mdassemble mdassemble.c Assemble.c Manage.c config.c dlink.c \
-	util.c super0.c super1.c sha1.o
+	mdopen.c mdstat.c util.c super0.c super1.c sha1.o
 %endif
 %{__make} clean
 %endif
