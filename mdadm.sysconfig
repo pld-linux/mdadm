@@ -3,5 +3,3 @@
 # Nice level for sysconf
 SERVICE_RUN_NICE_LEVEL="+5"
 
-# who should get reports
-MDADM_EMAIL="root@localhost"
