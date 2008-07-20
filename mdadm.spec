@@ -6,12 +6,12 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
-Version:	2.6.4
-Release:	3
-License:	GPL
+Version:	2.6.7
+Release:	1
+License:	GPL v2+
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
-# Source0-md5:	b616697aecc870d5d580bd6e010472a3
+# Source0-md5:	d0aeb5c44281a1d0e8a32a11dca1b481
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Patch0:		%{name}-degraded.patch
@@ -59,6 +59,9 @@ skonsolidowane na potrzeby initrd.
 
 %prep
 %setup -q
+# needs check if still needed - testcase is simple:
+# just setup system with / on RAID1 and try to boot with the 1st or
+# the 2nd disk disconnected
 #%patch0 -p1
 
 %build
@@ -73,11 +76,11 @@ diet %{__cc}  -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags}
 	-DHAVE_STDINT_H -o sha1.o -c sha1.c
 diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -static \
 	-o initrd-mdassemble mdassemble.c Assemble.c Manage.c config.c dlink.c \
-	mdopen.c mdstat.c util.c super0.c super1.c sha1.o
+	mdopen.c mdstat.c util.c sysfs.c super0.c super1.c sha1.o
 %else
 %{__make} mdadm.static \
 	CC="%{__cc}" \
-	CFLAGS="%{rpmcflags} -D_GNU_SOURCE" \
+	CFLAGS="%{rpmcflags}" \
 	LDFLAGS="%{rpmldflags}"
 mv -f mdadm.static initrd-mdadm
 %{__make} clean
@@ -85,14 +88,14 @@ mv -f mdadm.static initrd-mdadm
 	-o sha1.o -c sha1.c
 %{__cc} -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -DHAVE_STDINT_H -static \
 	-o initrd-mdassemble mdassemble.c Assemble.c Manage.c config.c dlink.c \
-	mdopen.c mdstat.c util.c super0.c super1.c sha1.o
+	mdopen.c mdstat.c util.c sysfs.c super0.c super1.c sha1.o
 %endif
 %{__make} clean
 %endif
 
 %{__make} \
 	CC="%{__cc}" \
-	CFLAGS="%{rpmcflags} -D_GNU_SOURCE" \
+	CFLAGS="%{rpmcflags}" \
 	LDFLAGS="%{rpmldflags}" \
 	SYSCONFDIR="%{_sysconfdir}"
 
