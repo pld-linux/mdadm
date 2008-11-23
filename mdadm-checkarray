@@ -67,7 +67,7 @@ quiet=0
 status=0
 action=check
 
-for opt in $@; do
+for opt in "$@"; do
   case "$opt" in
     -a|--all) all=1;;
     -c|--cron) cron=1;;
