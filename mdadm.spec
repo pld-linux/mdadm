@@ -7,13 +7,15 @@ Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
 Version:	2.6.7.1
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
 # Source0-md5:	9e8d4744985c8b7e92f748e743b7d2a3
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
+Source3:	%{name}.cron
+Source4:	%{name}-checkarray
 Patch0:		%{name}-degraded.patch
 Patch1:		%{name}-assemble-fix1.patch
 Patch2:		%{name}-00.patch
@@ -105,7 +107,7 @@ mv -f mdadm.static initrd-mdadm
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8},/etc/{rc.d/init.d,sysconfig}}
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8},/etc/{rc.d/init.d,sysconfig,cron.d}}
 
 %if %{with initrd}
 install initrd-mdadm $RPM_BUILD_ROOT%{_sbindir}
@@ -124,6 +126,9 @@ ln -s mdadm $RPM_BUILD_ROOT%{_sbindir}/mdctl
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
+
+install %{SOURCE3} $RPM_BUILD_ROOT/etc/cron.d/mdadm-checkarray
+install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/mdadm-checkarray
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -146,6 +151,8 @@ fi
 %{_mandir}/man?/*
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/%{name}
+%config(noreplace) %attr(640,root,root) /etc/cron.d/mdadm-checkarray
+
 %if %{with initrd}
 %exclude %{_sbindir}/initrd-*
 
