@@ -58,9 +58,7 @@ if [ $# -eq 0 ]; then
 	exit 0
 fi
 
-ARGS="$@"
-
-eval set -- $(getopt -o $SHORTOPTS -l $LONGOPTS -n $PROGNAME -- "$ARGS")
+eval set -- $(getopt -o $SHORTOPTS -l $LONGOPTS -n $PROGNAME -- "$@")
 
 arrays=''
 cron=0
@@ -69,7 +67,7 @@ quiet=0
 status=0
 action=check
 
-for opt in $ARGS; do
+for opt in $@; do
   case "$opt" in
     -a|--all) all=1;;
     -c|--cron) cron=1;;
