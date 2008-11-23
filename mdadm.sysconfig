@@ -3,3 +3,15 @@
 # Nice level for sysconf
 SERVICE_RUN_NICE_LEVEL="+5"
 
+# Should mdadm run monthly redundancy checks of the MD arrays?
+#
+# If the kernel supports it (versions greater than 2.6.14), mdadm can periodically check the
+# redundancy of MD arrays (RAIDs). This may be a resource-intensive process,
+# depending on the local setup, but it could help prevent rare cases of data loss.
+# Note that this is a read-only check unless errors are found; if errors are
+# found, mdadm will try to correct them, which may result in write access to
+# the media.
+# .
+# The default, if turned on, is to check on the first Sunday of every
+# month at 01:06.
+AUTOCHECK=yes
