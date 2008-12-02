@@ -6,18 +6,17 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
-Version:	2.6.7.2
+Version:	2.6.8
 Release:	1
 License:	GPL v2+
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
-# Source0-md5:	c97db437de4b0e49ff0d064c1193c22b
+# Source0-md5:	2987682214297f43c2870a7584d29859
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.cron
 Source4:	%{name}-checkarray
 Patch0:		%{name}-degraded.patch
-Patch1:		%{name}-00.patch
 URL:		http://www.kernel.org/pub/linux/utils/raid/mdadm/
 BuildRequires:	groff
 BuildRequires:	rpmbuild(macros) >= 1.213
@@ -66,7 +65,6 @@ skonsolidowane na potrzeby initrd.
 # just setup system with / on RAID1 and try to boot with the 1st or
 # the 2nd disk disconnected
 #%patch0 -p1
-%patch1 -p1
 
 %build
 %if %{with initrd}
