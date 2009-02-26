@@ -61,6 +61,19 @@ initrd.
 Narzędzie do zarządzania programowymi macierzami RAID - statycznie
 skonsolidowane na potrzeby initrd.
 
+%package initramfs
+Summary:	Tool for maintaining software RAID devices - support scripts for initramfs-tools
+Summary(pl.UTF-8):	Narzędzie do obsługi programowych macierzy RAID - skrypty dla initramfs-tools
+Group:		Base
+Requires:	%{name} = %{version}-%{release}
+Requires:	initramfs-tools
+
+%description initramfs
+Tool for maintaining software RAID devices - support scripts for initramfs-tools.
+
+%description initramfs -l pl.UTF-8
+Narzędzie do obsługi programowych macierzy RAID - skrypty dla initramfs-tools.
+
 %prep
 %setup -q
 # needs check if still needed - testcase is simple:
@@ -105,7 +118,8 @@ mv -f mdadm.static initrd-mdadm
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8},/etc/{rc.d/init.d,sysconfig,cron.d}}
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8},/etc/{rc.d/init.d,sysconfig,cron.d}} \
+	$RPM_BUILD_ROOT%{_datadir}/initramfs-tools/{hooks,scripts/local-top}
 
 %if %{with initrd}
 install initrd-mdadm $RPM_BUILD_ROOT%{_sbindir}
@@ -127,6 +141,9 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/cron.d/mdadm-checkarray
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/mdadm-checkarray
+
+install %{SOURCE5} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/hooks/mdadm
+install %{SOURCE6} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/local-top/mdadm
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -158,3 +175,8 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/initrd-*
 %endif
+
+%files initramfs
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_datadir}/initramfs-tools/hooks/mdadm
+%attr(755,root,root) %{_datadir}/initramfs-tools/scripts/local-top/mdadm
