@@ -16,6 +16,8 @@ Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.cron
 Source4:	%{name}-checkarray
+Source5:	%{name}-initramfs-hook
+Source6:	%{name}-initramfs-local-top
 Patch0:		%{name}-degraded.patch
 URL:		http://www.kernel.org/pub/linux/utils/raid/mdadm/
 BuildRequires:	groff
