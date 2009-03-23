@@ -23,11 +23,11 @@ URL:		http://www.kernel.org/pub/linux/utils/raid/mdadm/
 BuildRequires:	groff
 BuildRequires:	rpmbuild(macros) >= 1.213
 %if %{with initrd}
-%{!?with_dietlibc:BuildRequires:	glibc-static}
-%if %{with dietlibc}
+	%if %{with dietlibc}
 BuildRequires:	dietlibc-static
-%endif
-Requires:	%{name}-initrd = %{epoch}:%{version}-%{release}
+	%else
+BuildRequires:	glibc-static
+	%endif
 %endif
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
@@ -122,9 +122,10 @@ install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8},/etc/{rc.d/init.d,sys
 	$RPM_BUILD_ROOT%{_datadir}/initramfs-tools/{hooks,scripts/local-top}
 
 %if %{with initrd}
-install initrd-mdadm $RPM_BUILD_ROOT%{_sbindir}
-install initrd-mdassemble $RPM_BUILD_ROOT%{_sbindir}
-ln -s initrd-mdadm $RPM_BUILD_ROOT%{_sbindir}/initrd-mdctl
+install -d $RPM_BUILD_ROOT%{_libdir}/initrd
+install initrd-mdadm $RPM_BUILD_ROOT%{_libdir}/initrd/mdadm
+install initrd-mdassemble $RPM_BUILD_ROOT%{_libdir}/initrd/mdassemble
+ln -s mdadm $RPM_BUILD_ROOT%{_libdir}/initrd/mdctl
 %endif
 
 install mdadm $RPM_BUILD_ROOT%{_sbindir}
@@ -169,11 +170,11 @@ fi
 %config(noreplace) %attr(640,root,root) /etc/cron.d/mdadm-checkarray
 
 %if %{with initrd}
-%exclude %{_sbindir}/initrd-*
-
 %files initrd
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/initrd-*
+%attr(755,root,root) %{_libdir}/initrd/mdadm
+%attr(755,root,root) %{_libdir}/initrd/mdassemble
+%attr(755,root,root) %{_libdir}/initrd/mdctl
 %endif
 
 %files initramfs
