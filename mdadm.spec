@@ -52,6 +52,7 @@ alternatywa dla pakietu raidtools.
 Summary:	Tool for maintaining software RAID devices - initrd version
 Summary(pl.UTF-8):	Narzędzie do obsługi programowych macierzy RAID, wersja dla initrd
 Group:		Base
+Conflicts:	geninitrd <= 10000.3
 
 %description initrd
 Tool for maintaining software RAID devices - statically linked for
