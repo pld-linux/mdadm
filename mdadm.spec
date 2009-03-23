@@ -86,13 +86,13 @@ Narzędzie do obsługi programowych macierzy RAID - skrypty dla initramfs-tools.
 %if %{with initrd}
 %if %{with dietlibc}
 %{__make} mdadm \
-	CC="diet %{__cc} %{rpmcflags} %{rpmldflags} -static" \
+	CC="diet %{__cc} %{rpmcflags} %{rpmldflags} -Os -static" \
 	CWFLAGS="-Wall"
 mv -f mdadm initrd-mdadm
 %{__make} clean
-diet %{__cc}  -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} \
+diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -Os \
 	-DHAVE_STDINT_H -o sha1.o -c sha1.c
-diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -static \
+diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -Os -static \
 	-o initrd-mdassemble mdassemble.c Assemble.c Manage.c config.c dlink.c \
 	mdopen.c mdstat.c util.c sysfs.c super0.c super1.c sha1.o
 %else
