@@ -22,7 +22,7 @@ start() {
 	if [ ! -f /var/lock/subsys/mdadm ]; then
 		[ -n "$MDADM_EMAIL" ] && echo "WARNING: sysconfig/mdadm:MDADM_EMAIL no longer supported. Please use /etc/mdadm.conf:MAILADDR setting." >&2
 		msg_starting mdadm
-		daemon mdadm --monitor --scan --daemonise --pid-file /var/run/mdadm.pid ${MDADM_OPTS}
+		daemon /sbin/mdadm --monitor --scan --daemonise --pid-file /var/run/mdadm.pid ${MDADM_OPTS}
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/mdadm
 	else
