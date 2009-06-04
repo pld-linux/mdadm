@@ -6,12 +6,12 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
-Version:	2.6.9
-Release:	2
+Version:	3.0
+Release:	1
 License:	GPL v2+
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
-# Source0-md5:	96c1bcac1699ba1aa70dfd04a08549c9
+# Source0-md5:	bcd27a1359b18e25e61593221d098f6a
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.cron
@@ -90,11 +90,11 @@ Narzędzie do obsługi programowych macierzy RAID - skrypty dla initramfs-tools.
 	CWFLAGS="-Wall"
 mv -f mdadm initrd-mdadm
 %{__make} clean
-diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -Os \
-	-DHAVE_STDINT_H -o sha1.o -c sha1.c
 diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -Os -static \
-	-o initrd-mdassemble mdassemble.c Assemble.c Manage.c config.c dlink.c \
-	mdopen.c mdstat.c util.c sysfs.c super0.c super1.c sha1.o
+	-o initrd-mdassemble \
+	mdassemble.c Assemble.c Manage.c config.c dlink.c util.c \
+        super0.c super1.c super-ddf.c super-intel.c sha1.c crc32.c sg_io.c mdstat.c \
+        platform-intel.c probe_roms.c sysfs.c mdopen.c
 %else
 %{__make} mdadm.static \
 	CC="%{__cc}" \
@@ -102,11 +102,11 @@ diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} 
 	LDFLAGS="%{rpmldflags}"
 mv -f mdadm.static initrd-mdadm
 %{__make} clean
-%{__cc} -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -DHAVE_STDINT_H \
-	-o sha1.o -c sha1.c
 %{__cc} -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -DHAVE_STDINT_H -static \
-	-o initrd-mdassemble mdassemble.c Assemble.c Manage.c config.c dlink.c \
-	mdopen.c mdstat.c util.c sysfs.c super0.c super1.c sha1.o
+	-o initrd-mdassemble \
+	mdassemble.c Assemble.c Manage.c config.c dlink.c util.c \
+        super0.c super1.c super-ddf.c super-intel.c sha1.c crc32.c sg_io.c mdstat.c \
+        platform-intel.c probe_roms.c sysfs.c mdopen.c
 %endif
 %{__make} clean
 %endif
