@@ -86,11 +86,11 @@ Narzędzie do obsługi programowych macierzy RAID - skrypty dla initramfs-tools.
 %if %{with initrd}
 %if %{with dietlibc}
 %{__make} mdadm \
-	CC="diet %{__cc} %{rpmcflags} %{rpmldflags} -Os -static" \
+	CC="diet %{__cc} %{rpmcflags} %{rpmcppflags} %{rpmldflags} -Os -static" \
 	CWFLAGS="-Wall"
 mv -f mdadm initrd-mdadm
 %{__make} clean
-diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -Os -static \
+diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmcppflags} %{rpmldflags} -Os -static \
 	-o initrd-mdassemble \
 	mdassemble.c Assemble.c Manage.c config.c dlink.c util.c \
         super0.c super1.c super-ddf.c super-intel.c sha1.c crc32.c sg_io.c mdstat.c \
@@ -98,11 +98,11 @@ diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} 
 %else
 %{__make} mdadm.static \
 	CC="%{__cc}" \
-	CFLAGS="%{rpmcflags}" \
+	CFLAGS="%{rpmcflags} %{rpmcppflags}" \
 	LDFLAGS="%{rpmldflags}"
 mv -f mdadm.static initrd-mdadm
 %{__make} clean
-%{__cc} -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmldflags} -DHAVE_STDINT_H -static \
+%{__cc} -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmcppflags} %{rpmldflags} -DHAVE_STDINT_H -static \
 	-o initrd-mdassemble \
 	mdassemble.c Assemble.c Manage.c config.c dlink.c util.c \
         super0.c super1.c super-ddf.c super-intel.c sha1.c crc32.c sg_io.c mdstat.c \
@@ -113,7 +113,7 @@ mv -f mdadm.static initrd-mdadm
 
 %{__make} \
 	CC="%{__cc}" \
-	CFLAGS="%{rpmcflags}" \
+	CFLAGS="%{rpmcflags} %{rpmcppflags}" \
 	LDFLAGS="%{rpmldflags}" \
 	SYSCONFDIR="%{_sysconfdir}"
 
