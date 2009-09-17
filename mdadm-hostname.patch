@@ -1,34 +1,11 @@
---- mdadm-3.0/mdadm.c~	2009-06-02 07:48:29.000000000 +0200
-+++ mdadm-3.0/mdadm.c	2009-09-17 11:35:48.599193152 +0200
-@@ -1016,10 +1016,11 @@
- 	if (homehost == NULL)
- 		homehost = conf_get_homehost(&require_homehost);
- 	if (homehost == NULL || strcmp(homehost, "<system>")==0) {
--		if (gethostname(sys_hostname, sizeof(sys_hostname)) == 0) {
-+		if (gethostname(sys_hostname, sizeof(sys_hostname)) == 0)
- 			sys_hostname[sizeof(sys_hostname)-1] = 0;
--			homehost = sys_hostname;
--		}
-+		else
-+			sprintf(sys_hostname, "%s", "<unknown>");
-+		homehost = sys_hostname;
- 	}
- 
- 	ident.autof = autof;
---- mdadm-3.0/mapfile.c~	2009-06-02 07:48:29.000000000 +0200
-+++ mdadm-3.0/mapfile.c	2009-09-17 11:37:04.422518848 +0200
-@@ -308,10 +308,11 @@
- 	char *homehost = conf_get_homehost(&require_homehost);
- 
- 	if (homehost == NULL || strcmp(homehost, "<system>")==0) {
--		if (gethostname(sys_hostname, sizeof(sys_hostname)) == 0) {
-+		if (gethostname(sys_hostname, sizeof(sys_hostname)) == 0)
- 			sys_hostname[sizeof(sys_hostname)-1] = 0;
--			homehost = sys_hostname;
--		}
-+		else
-+			sprintf(sys_hostname, "%s", "(unknown)");
-+		homehost = sys_hostname;
- 	}
- 
- 	for (md = mdstat ; md ; md = md->next) {
+--- mdadm-3.0/mdassemble.c.orig	2009-06-02 07:48:29.000000000 +0200
++++ mdadm-3.0/mdassemble.c	2009-09-17 16:30:34.471798993 +0200
+@@ -106,7 +106,7 @@
+ 				close(mdfd);
+ 			rv |= Assemble(array_list->st, array_list->devname,
+ 				       array_list, NULL, NULL,
+-				       readonly, runstop, NULL, NULL, 0,
++				       readonly, runstop, NULL, "<unknown>", 0,
+ 				       verbose, force);
+ 		}
+ 	return rv;
