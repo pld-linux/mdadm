@@ -2,6 +2,7 @@
 # Conditional build:
 %bcond_without	initrd		# don't build initrd version
 %bcond_with		dietlibc	# link initrd version with static glibc instead of dietlibc
+%bcond_without	tests
 #
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
@@ -111,6 +112,8 @@ mv -f mdadm.static initrd-mdadm
 	CFLAGS="%{rpmcflags} %{rpmcppflags}" \
 	LDFLAGS="%{rpmldflags}" \
 	SYSCONFDIR="%{_sysconfdir}"
+
+%{?with_tests:%{__make} test}
 
 %install
 rm -rf $RPM_BUILD_ROOT
