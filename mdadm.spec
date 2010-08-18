@@ -1,8 +1,8 @@
 #
 # Conditional build:
 %bcond_without	initrd		# don't build initrd version
-%bcond_with		dietlibc	# link initrd version with static glibc instead of dietlibc
-%bcond_without	tests
+%bcond_with	dietlibc	# link initrd version with static glibc instead of dietlibc
+%bcond_without	tests		# don't perform "make test"
 #
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
@@ -161,9 +161,14 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc ANNOUNCE* ChangeLog TODO
-%attr(755,root,root) %{_sbindir}/*
+%attr(755,root,root) %{_sbindir}/mdadm
+%attr(755,root,root) %{_sbindir}/mdadm-checkarray
+%attr(755,root,root) %{_sbindir}/mdctl
 %attr(640,root,root) %config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/mdadm.conf
-%{_mandir}/man?/*
+%{_mandir}/man5/mdadm.conf.5*
+%{_mandir}/man8/mdadm.8*
+%{_mandir}/man8/mdassemble.8*
+%{_mandir}/man8/mdmon.8*
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/%{name}
 %config(noreplace) %attr(640,root,root) /etc/cron.d/mdadm-checkarray
