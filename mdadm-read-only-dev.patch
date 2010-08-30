@@ -1,0 +1,58 @@
+commit 161ecfdf3f2dfbe00b96507a18107f7ac8019039
+Author: NeilBrown <neilb@suse.de>
+Date:   Mon Aug 30 08:48:48 2010 +1000
+
+    Allow dev_open to work on read-only /dev
+    
+    /dev could be read-only in which case we cannot make devices
+    there.
+    So dev_open should first try to use an existing device name,
+    and if that doesn't work try creating a node in /dev or /tmp.
+    
+    Reported-by:  Pawe=C5=82 Sikora <pluto@agmk.net>
+    Signed-off-by: NeilBrown <neilb@suse.de>
+
+diff --git a/util.c b/util.c
+index 0b9949a..7a1cab2 100644
+--- a/util.c
++++ b/util.c
+@@ -959,19 +959,33 @@ int dev_open(char *dev, int flags)
+ 	int minor;
+ 
+ 	if (!dev) return -1;
++	flags |= O_DIRECT;
+ 
+ 	major = strtoul(dev, &e, 0);
+ 	if (e > dev && *e == ':' && e[1] &&
+ 	    (minor = strtoul(e+1, &e, 0)) >= 0 &&
+ 	    *e == 0) {
+-		snprintf(devname, sizeof(devname), "/dev/.tmp.md.%d:%d:%d",
+-			 (int)getpid(), major, minor);
+-		if (mknod(devname, S_IFBLK|0600, makedev(major, minor))==0) {
+-			fd = open(devname, flags|O_DIRECT);
+-			unlink(devname);
++		char *path = map_dev(major, minor, 0);
++		if (path)
++			fd = open(devname, flags);
++		if (fd < 0) {
++			snprintf(devname, sizeof(devname), "/dev/.tmp.md.%d:%d:%d",
++				 (int)getpid(), major, minor);
++			if (mknod(devname, S_IFBLK|0600, makedev(major, minor))==0) {
++				fd = open(devname, flags);
++				unlink(devname);
++			}
++		}
++		if (fd < 0) {
++			snprintf(devname, sizeof(devname), "/tmp/.tmp.md.%d:%d:%d",
++				 (int)getpid(), major, minor);
++			if (mknod(devname, S_IFBLK|0600, makedev(major, minor))==0) {
++				fd = open(devname, flags);
++				unlink(devname);
++			}
+ 		}
+ 	} else
+-		fd = open(dev, flags|O_DIRECT);
++		fd = open(dev, flags);
+ 	return fd;
+ }
+ 
