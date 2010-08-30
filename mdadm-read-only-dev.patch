@@ -33,7 +33,7 @@ index 0b9949a..7a1cab2 100644
 -			unlink(devname);
 +		char *path = map_dev(major, minor, 0);
 +		if (path)
-+			fd = open(devname, flags);
++			fd = open(path, flags);
 +		if (fd < 0) {
 +			snprintf(devname, sizeof(devname), "/dev/.tmp.md.%d:%d:%d",
 +				 (int)getpid(), major, minor);
