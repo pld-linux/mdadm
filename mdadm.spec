@@ -9,13 +9,13 @@ Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
 # This is a "Developers only" release.  Please don't consider using it
 # or making it available to others ...
-Version:	3.2
+Version:	3.2.1
 # keep 0.1 until it's non-developers
 Release:	0.1
 License:	GPL v2+
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
-# Source0-md5:	c76fd1d6fe99d2c072e881d5b736e28c
+# Source0-md5:	d1e2549202bd79d9e99f1498d1109530
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.cron
