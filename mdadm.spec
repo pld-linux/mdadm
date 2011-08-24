@@ -7,15 +7,12 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
-# This is a "Developers only" release.  Please don't consider using it
-# or making it available to others ...
-Version:	3.2.1
-# keep 0.1 until it's non-developers
-Release:	0.1
+Version:	3.2.2
+Release:	1
 License:	GPL v2+
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
-# Source0-md5:	d1e2549202bd79d9e99f1498d1109530
+# Source0-md5:	12ee2fbf3beddb60601fb7a4c4905651
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.cron
@@ -91,9 +88,9 @@ mv -f mdadm initrd-mdadm
 %{__make} clean
 diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmcppflags} %{rpmldflags} -Os -static \
 	-o initrd-mdassemble \
-	mdassemble.c Assemble.c Manage.c config.c policy.c dlink.c util.c \
+	mdassemble.c Assemble.c Manage.c config.c policy.c dlink.c util.c lib.c \
         super0.c super1.c super-ddf.c super-intel.c sha1.c crc32.c sg_io.c mdstat.c \
-        platform-intel.c probe_roms.c sysfs.c super-mbr.c super-gpt.c mdopen.c
+        platform-intel.c probe_roms.c sysfs.c super-mbr.c super-gpt.c mdopen.c maps.c
 %else
 %{__make} mdadm.static \
 	CC="%{__cc}" \
@@ -103,9 +100,9 @@ mv -f mdadm.static initrd-mdadm
 %{__make} clean
 %{__cc} -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmcppflags} %{rpmldflags} -DHAVE_STDINT_H -static \
 	-o initrd-mdassemble \
-	mdassemble.c Assemble.c Manage.c config.c policy.c dlink.c util.c \
+	mdassemble.c Assemble.c Manage.c config.c policy.c dlink.c util.c lib.c \
         super0.c super1.c super-ddf.c super-intel.c sha1.c crc32.c sg_io.c mdstat.c \
-        platform-intel.c probe_roms.c sysfs.c super-mbr.c super-gpt.c mdopen.c
+        platform-intel.c probe_roms.c sysfs.c super-mbr.c super-gpt.c mdopen.c maps.c
 %endif
 %{__make} clean
 %endif
@@ -169,7 +166,7 @@ fi
 %attr(755,root,root) %{_sbindir}/mdctl
 %attr(640,root,root) %config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/mdadm.conf
 %{_mandir}/man5/mdadm.conf.5*
-%{_mandir}/man8/mdadm.8*
+#%{_mandir}/man8/mdadm.8*
 %{_mandir}/man8/mdassemble.8*
 %{_mandir}/man8/mdmon.8*
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
