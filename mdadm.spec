@@ -129,8 +129,8 @@ ln -s mdadm $RPM_BUILD_ROOT%{_libdir}/initrd/mdctl
 
 install mdadm $RPM_BUILD_ROOT%{_sbindir}
 
-install *.5 $RPM_BUILD_ROOT%{_mandir}/man5
-install *.8 $RPM_BUILD_ROOT%{_mandir}/man8
+install md*.5 $RPM_BUILD_ROOT%{_mandir}/man5
+install md*.8 $RPM_BUILD_ROOT%{_mandir}/man8
 
 install mdadm.conf-example $RPM_BUILD_ROOT%{_sysconfdir}/mdadm.conf
 
