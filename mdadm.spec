@@ -107,7 +107,7 @@ mv -f mdadm.static initrd-mdadm
 %{__make} clean
 %endif
 
-%{__make} \
+%{__make} all mdadm.8 \
 	CC="%{__cc}" \
 	CFLAGS="%{rpmcflags} %{rpmcppflags}" \
 	LDFLAGS="%{rpmldflags}" \
@@ -166,7 +166,7 @@ fi
 %attr(755,root,root) %{_sbindir}/mdctl
 %attr(640,root,root) %config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/mdadm.conf
 %{_mandir}/man5/mdadm.conf.5*
-#%{_mandir}/man8/mdadm.8*
+%{_mandir}/man8/mdadm.8*
 %{_mandir}/man8/mdassemble.8*
 %{_mandir}/man8/mdmon.8*
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
