@@ -6,8 +6,8 @@
 # description:	RAID array monitoring
 #
 # processname:	mdadm
-# config:
-# pidfile:
+# config:	/etc/mdadm.conf
+# pidfile:	/var/run/mdadm.pid
 
 # Source function library.
 . /etc/rc.d/init.d/functions
