@@ -1,0 +1,11 @@
+--- mdadm-3.2.3/config.c~	2011-12-15 05:13:08.000000000 +0100
++++ mdadm-3.2.3/config.c	2012-02-16 06:39:36.563902053 +0100
+@@ -1045,7 +1045,7 @@
+ 					array_list->devname);
+ 			continue;
+ 		}
+-		if (array_list->devices &&
++		if (array_list->devices && devname &&
+ 		    !match_oneof(array_list->devices, devname)) {
+ 			if (verbose >= 2 && array_list->devname)
+ 				fprintf(stderr, Name
