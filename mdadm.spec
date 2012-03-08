@@ -8,7 +8,7 @@ Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
 Version:	3.2.3
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
@@ -20,6 +20,7 @@ Source4:	%{name}-checkarray
 Source5:	%{name}-initramfs-hook
 Source6:	%{name}-initramfs-local-top
 Patch0:		%{name}-segv.patch
+Patch1:		%{name}-bitmap.patch
 URL:		http://www.kernel.org/pub/linux/utils/raid/mdadm/
 BuildRequires:	groff
 BuildRequires:	rpmbuild(macros) >= 1.213
@@ -79,6 +80,7 @@ Narzędzie do obsługi programowych macierzy RAID - skrypty dla initramfs-tools.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %if %{with initrd}
