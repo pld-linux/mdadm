@@ -8,7 +8,7 @@ Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
 Version:	3.2.3
-Release:	3
+Release:	4
 License:	GPL v2+
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
@@ -17,8 +17,6 @@ Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.cron
 Source4:	%{name}-checkarray
-Source5:	%{name}-initramfs-hook
-Source6:	%{name}-initramfs-local-top
 Patch0:		%{name}-segv.patch
 Patch1:		%{name}-bitmap.patch
 URL:		http://www.kernel.org/pub/linux/utils/raid/mdadm/
@@ -64,19 +62,6 @@ initrd.
 Narzędzie do zarządzania programowymi macierzami RAID - statycznie
 skonsolidowane na potrzeby initrd.
 
-%package initramfs
-Summary:	Tool for maintaining software RAID devices - support scripts for initramfs-tools
-Summary(pl.UTF-8):	Narzędzie do obsługi programowych macierzy RAID - skrypty dla initramfs-tools
-Group:		Base
-Requires:	%{name} = %{version}-%{release}
-Requires:	initramfs-tools
-
-%description initramfs
-Tool for maintaining software RAID devices - support scripts for initramfs-tools.
-
-%description initramfs -l pl.UTF-8
-Narzędzie do obsługi programowych macierzy RAID - skrypty dla initramfs-tools.
-
 %prep
 %setup -q
 %patch0 -p1
@@ -121,8 +106,7 @@ mv -f mdadm.static initrd-mdadm
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8},/etc/{rc.d/init.d,sysconfig,cron.d}} \
-	$RPM_BUILD_ROOT%{_datadir}/initramfs-tools/{hooks,scripts/local-top}
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8},/etc/{rc.d/init.d,sysconfig,cron.d}}
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_libdir}/initrd
@@ -145,9 +129,6 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/cron.d/mdadm-checkarray
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/mdadm-checkarray
-
-install %{SOURCE5} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/hooks/mdadm
-install %{SOURCE6} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/local-top/mdadm
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -184,8 +165,3 @@ fi
 %attr(755,root,root) %{_libdir}/initrd/mdassemble
 %attr(755,root,root) %{_libdir}/initrd/mdctl
 %endif
-
-%files initramfs
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_datadir}/initramfs-tools/hooks/mdadm
-%attr(755,root,root) %{_datadir}/initramfs-tools/scripts/local-top/mdadm
