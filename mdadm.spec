@@ -7,17 +7,17 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
-Version:	3.2.6
+Version:	3.3
 Release:	1
 License:	GPL v2+
 Group:		Base
-Source0:	http://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.bz2
-# Source0-md5:	3e255dc71e5144bbcb872788ca647267
+Source0:	https://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.xz
+# Source0-md5:	abb19b309281b93cf79d29fb2dfb2e85
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.cron
 Source4:	%{name}-checkarray
-URL:		http://www.kernel.org/pub/linux/utils/raid/mdadm/
+URL:		https://www.kernel.org/pub/linux/utils/raid/mdadm/
 BuildRequires:	groff
 BuildRequires:	rpmbuild(macros) >= 1.213
 %if %{with initrd}
@@ -28,6 +28,8 @@ BuildRequires:	glibc-static
 	%endif
 %endif
 BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	tar >= 1:1.22
+BuildRequires:	xz
 Requires(post,preun):	/sbin/chkconfig
 Requires:	/sbin/chkconfig
 Requires:	rc-scripts >= 0.4.2.4-2
@@ -75,7 +77,7 @@ diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmcppflags}
 	-o initrd-mdassemble \
 	mdassemble.c Assemble.c Manage.c config.c policy.c dlink.c util.c lib.c \
         super0.c super1.c super-ddf.c super-intel.c sha1.c crc32.c sg_io.c mdstat.c \
-        platform-intel.c probe_roms.c sysfs.c super-mbr.c super-gpt.c mdopen.c maps.c
+        platform-intel.c probe_roms.c sysfs.c super-mbr.c super-gpt.c mdopen.c maps.c xmalloc.c
 %else
 %{__make} mdadm.static \
 	CC="%{__cc}" \
@@ -87,7 +89,7 @@ mv -f mdadm.static initrd-mdadm
 	-o initrd-mdassemble \
 	mdassemble.c Assemble.c Manage.c config.c policy.c dlink.c util.c lib.c \
         super0.c super1.c super-ddf.c super-intel.c sha1.c crc32.c sg_io.c mdstat.c \
-        platform-intel.c probe_roms.c sysfs.c super-mbr.c super-gpt.c mdopen.c maps.c
+        platform-intel.c probe_roms.c sysfs.c super-mbr.c super-gpt.c mdopen.c maps.c xmalloc.c
 %endif
 %{__make} clean
 %endif
