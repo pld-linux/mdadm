@@ -1,6 +1,6 @@
 #
 # Conditional build:
-%bcond_without	initrd		# don't build initrd version
+%bcond_with	initrd		# don't build initrd version
 %bcond_with	dietlibc	# link initrd version with static glibc instead of dietlibc
 %bcond_without	tests		# don't perform "make test"
 #
@@ -8,7 +8,7 @@ Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
 Version:	3.3
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Base
 Source0:	https://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.xz
@@ -34,6 +34,7 @@ Requires(post,preun):	/sbin/chkconfig
 Requires:	/sbin/chkconfig
 Requires:	rc-scripts >= 0.4.2.4-2
 Obsoletes:	mdctl
+%{!?with_initrd:Obsoletes:	mdadm-initrd < %{version}-%{release}}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir		/sbin
