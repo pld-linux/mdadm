@@ -8,7 +8,7 @@ Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
 Version:	3.3
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Base
 Source0:	https://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.xz
@@ -95,7 +95,7 @@ mv -f mdadm.static initrd-mdadm
 %{__make} clean
 %endif
 
-%{__make} all mdadm.8 \
+%{__make} all mdassemble mdadm.8 \
 	CC="%{__cc}" \
 	CFLAGS="%{rpmcflags} %{rpmcppflags}" \
 	LDFLAGS="%{rpmldflags}" \
@@ -114,6 +114,7 @@ install initrd-mdassemble $RPM_BUILD_ROOT%{_libdir}/initrd/mdassemble
 ln -s mdadm $RPM_BUILD_ROOT%{_libdir}/initrd/mdctl
 %endif
 
+install mdassemble $RPM_BUILD_ROOT%{_sbindir}
 install mdadm $RPM_BUILD_ROOT%{_sbindir}
 
 install md*.5 $RPM_BUILD_ROOT%{_mandir}/man5
@@ -147,6 +148,7 @@ fi
 %doc ANNOUNCE* ChangeLog TODO
 %attr(755,root,root) %{_sbindir}/mdadm
 %attr(755,root,root) %{_sbindir}/mdadm-checkarray
+%attr(755,root,root) %{_sbindir}/mdassemble
 %attr(755,root,root) %{_sbindir}/mdctl
 %attr(640,root,root) %config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/mdadm.conf
 %{_mandir}/man5/mdadm.conf.5*
