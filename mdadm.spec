@@ -8,7 +8,7 @@ Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
 Version:	3.3
-Release:	3
+Release:	4
 License:	GPL v2+
 Group:		Base
 Source0:	https://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.xz
@@ -95,7 +95,16 @@ mv -f mdadm.static initrd-mdadm
 %{__make} clean
 %endif
 
-%{__make} all mdassemble mdadm.8 \
+%{__make} mdassemble \
+	MDASSEMBLE_AUTO=1 \
+	CC="%{__cc}" \
+	CFLAGS="%{rpmcflags} %{rpmcppflags}" \
+	LDFLAGS="%{rpmldflags}" \
+	SYSCONFDIR="%{_sysconfdir}"
+mv mdassemble regular-mdassemble
+%{__make} clean
+
+%{__make} all mdadm mdadm.8 \
 	CC="%{__cc}" \
 	CFLAGS="%{rpmcflags} %{rpmcppflags}" \
 	LDFLAGS="%{rpmldflags}" \
@@ -114,7 +123,7 @@ install initrd-mdassemble $RPM_BUILD_ROOT%{_libdir}/initrd/mdassemble
 ln -s mdadm $RPM_BUILD_ROOT%{_libdir}/initrd/mdctl
 %endif
 
-install mdassemble $RPM_BUILD_ROOT%{_sbindir}
+install regular-mdassemble $RPM_BUILD_ROOT%{_sbindir}/mdassemble
 install mdadm $RPM_BUILD_ROOT%{_sbindir}
 
 install md*.5 $RPM_BUILD_ROOT%{_mandir}/man5
