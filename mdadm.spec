@@ -3,12 +3,12 @@
 %bcond_with	initrd		# don't build initrd version
 %bcond_with	dietlibc	# link initrd version with static glibc instead of dietlibc
 %bcond_without	tests		# don't perform "make test"
-#
+
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
 Version:	3.3
-Release:	4
+Release:	5
 License:	GPL v2+
 Group:		Base
 Source0:	https://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.xz
@@ -33,8 +33,9 @@ BuildRequires:	xz
 Requires(post,preun):	/sbin/chkconfig
 Requires:	/sbin/chkconfig
 Requires:	rc-scripts >= 0.4.2.4-2
-Obsoletes:	mdctl
+Suggests:	crondaemon
 %{!?with_initrd:Obsoletes:	mdadm-initrd < %{version}-%{release}}
+Obsoletes:	mdctl
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir		/sbin
@@ -77,8 +78,8 @@ mv -f mdadm initrd-mdadm
 diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmcppflags} %{rpmldflags} -Os -static \
 	-o initrd-mdassemble \
 	mdassemble.c Assemble.c Manage.c config.c policy.c dlink.c util.c lib.c \
-        super0.c super1.c super-ddf.c super-intel.c sha1.c crc32.c sg_io.c mdstat.c \
-        platform-intel.c probe_roms.c sysfs.c super-mbr.c super-gpt.c mdopen.c maps.c xmalloc.c
+	super0.c super1.c super-ddf.c super-intel.c sha1.c crc32.c sg_io.c mdstat.c \
+	platform-intel.c probe_roms.c sysfs.c super-mbr.c super-gpt.c mdopen.c maps.c xmalloc.c
 %else
 %{__make} mdadm.static \
 	CC="%{__cc}" \
@@ -89,8 +90,8 @@ mv -f mdadm.static initrd-mdadm
 %{__cc} -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmcppflags} %{rpmldflags} -DHAVE_STDINT_H -static \
 	-o initrd-mdassemble \
 	mdassemble.c Assemble.c Manage.c config.c policy.c dlink.c util.c lib.c \
-        super0.c super1.c super-ddf.c super-intel.c sha1.c crc32.c sg_io.c mdstat.c \
-        platform-intel.c probe_roms.c sysfs.c super-mbr.c super-gpt.c mdopen.c maps.c xmalloc.c
+	super0.c super1.c super-ddf.c super-intel.c sha1.c crc32.c sg_io.c mdstat.c \
+	platform-intel.c probe_roms.c sysfs.c super-mbr.c super-gpt.c mdopen.c maps.c xmalloc.c
 %endif
 %{__make} clean
 %endif
@@ -118,26 +119,26 @@ install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8},/etc/{rc.d/init.d,sys
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_libdir}/initrd
-install initrd-mdadm $RPM_BUILD_ROOT%{_libdir}/initrd/mdadm
-install initrd-mdassemble $RPM_BUILD_ROOT%{_libdir}/initrd/mdassemble
+install -p initrd-mdadm $RPM_BUILD_ROOT%{_libdir}/initrd/mdadm
+install -p initrd-mdassemble $RPM_BUILD_ROOT%{_libdir}/initrd/mdassemble
 ln -s mdadm $RPM_BUILD_ROOT%{_libdir}/initrd/mdctl
 %endif
 
-install regular-mdassemble $RPM_BUILD_ROOT%{_sbindir}/mdassemble
-install mdadm $RPM_BUILD_ROOT%{_sbindir}
+install -p regular-mdassemble $RPM_BUILD_ROOT%{_sbindir}/mdassemble
+install -p mdadm $RPM_BUILD_ROOT%{_sbindir}
 
-install md*.5 $RPM_BUILD_ROOT%{_mandir}/man5
-install md*.8 $RPM_BUILD_ROOT%{_mandir}/man8
+cp -p md*.5 $RPM_BUILD_ROOT%{_mandir}/man5
+cp -p md*.8 $RPM_BUILD_ROOT%{_mandir}/man8
 
-install mdadm.conf-example $RPM_BUILD_ROOT%{_sysconfdir}/mdadm.conf
+cp -p mdadm.conf-example $RPM_BUILD_ROOT%{_sysconfdir}/mdadm.conf
 
 ln -s mdadm $RPM_BUILD_ROOT%{_sbindir}/mdctl
 
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
+install -p %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+cp -p %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 
-install %{SOURCE3} $RPM_BUILD_ROOT/etc/cron.d/mdadm-checkarray
-install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/mdadm-checkarray
+cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/cron.d/mdadm-checkarray
+install -p %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/mdadm-checkarray
 
 %clean
 rm -rf $RPM_BUILD_ROOT
