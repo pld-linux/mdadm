@@ -8,7 +8,7 @@ Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
 Version:	4.0
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Base
 Source0:	https://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.xz
@@ -17,6 +17,7 @@ Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.cron
 Source4:	%{name}-checkarray
+Source5:	%{name}.service
 URL:		https://www.kernel.org/pub/linux/utils/raid/mdadm/
 BuildRequires:	groff
 BuildRequires:	rpmbuild(macros) >= 1.213
@@ -27,12 +28,13 @@ BuildRequires:	dietlibc-static
 BuildRequires:	glibc-static
 	%endif
 %endif
-BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	rpmbuild(macros) >= 1.671
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
 Requires(post,preun):	/sbin/chkconfig
 Requires:	/sbin/chkconfig
 Requires:	rc-scripts >= 0.4.2.4-2
+Requires:	systemd-units >= 38
 Suggests:	crondaemon
 %{!?with_initrd:Obsoletes:	mdadm-initrd < %{version}-%{release}}
 Obsoletes:	mdctl
@@ -115,7 +117,8 @@ mv mdassemble regular-mdassemble
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8},/etc/{rc.d/init.d,sysconfig,cron.d}}
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8}} \
+	$RPM_BUILD_ROOT{/etc/{rc.d/init.d,sysconfig,cron.d},%{systemdunitdir}}
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_libdir}/initrd
@@ -140,18 +143,30 @@ cp -p %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/cron.d/mdadm-checkarray
 install -p %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/mdadm-checkarray
 
+# Install systemd unit
+install -p %{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}/mdadm.service
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/chkconfig --add %{name}
 %service mdadm restart "RAID monitoring"
+%systemd_post mdadm.service
 
 %preun
 if [ "$1" = "0" ]; then
 	%service mdadm stop
 	/sbin/chkconfig --del mdadm
 fi
+%systemd_preun mdadm.service
+
+%postun
+/sbin/ldconfig
+%systemd_reload
+
+%triggerpostun -- %{name} < 4.0-2
+%systemd_trigger mdadm.service
 
 %files
 %defattr(644,root,root,755)
@@ -160,6 +175,7 @@ fi
 %attr(755,root,root) %{_sbindir}/mdadm-checkarray
 %attr(755,root,root) %{_sbindir}/mdassemble
 %attr(755,root,root) %{_sbindir}/mdctl
+%{systemdunitdir}/mdadm.service
 %attr(640,root,root) %config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/mdadm.conf
 %{_mandir}/man5/mdadm.conf.5*
 %{_mandir}/man8/mdadm.8*
