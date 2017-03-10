@@ -19,6 +19,7 @@ Source3:	%{name}.cron
 Source4:	%{name}-checkarray
 Source5:	%{name}.service
 URL:		https://www.kernel.org/pub/linux/utils/raid/mdadm/
+BuildRequires:	dlm-devel
 BuildRequires:	groff
 BuildRequires:	rpmbuild(macros) >= 1.213
 %if %{with initrd}

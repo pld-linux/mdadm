@@ -1,0 +1,5 @@
+[Unit]
+Description=mdadm-checkarray cronjob
+
+[Service]
+ExecStart=/sbin/mdadm-checkarray --cron --all --quiet

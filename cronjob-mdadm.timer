@@ -1,0 +1,10 @@
+[Unit]
+Description=mdadm-checkarray cronjob timer
+
+[Timer]
+OnCalendar=Sun *-*-1,2,3,4,5,6 00:57:00
+
+[Install]
+WantedBy=cronjobs.target
+
+# vi: ft=systemd
