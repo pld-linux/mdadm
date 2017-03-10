@@ -8,7 +8,7 @@ Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
 Version:	4.0
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Base
 Source0:	https://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.xz
@@ -18,6 +18,8 @@ Source2:	%{name}.sysconfig
 Source3:	%{name}.cron
 Source4:	%{name}-checkarray
 Source5:	%{name}.service
+Source6:	cronjob-%{name}.timer
+Source7:	cronjob-%{name}.service
 URL:		https://www.kernel.org/pub/linux/utils/raid/mdadm/
 BuildRequires:	dlm-devel
 BuildRequires:	groff
@@ -36,7 +38,7 @@ Requires(post,preun):	/sbin/chkconfig
 Requires:	/sbin/chkconfig
 Requires:	rc-scripts >= 0.4.2.4-2
 Requires:	systemd-units >= 38
-Suggests:	crondaemon
+Suggests:	cronjobs
 %{!?with_initrd:Obsoletes:	mdadm-initrd < %{version}-%{release}}
 Obsoletes:	mdctl
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -144,8 +146,10 @@ cp -p %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/cron.d/mdadm-checkarray
 install -p %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/mdadm-checkarray
 
-# Install systemd unit
+# Install systemd units
 install -p %{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}/mdadm.service
+install -p %{SOURCE6} $RPM_BUILD_ROOT%{systemdunitdir}/cronjob-mdadm.timer
+install -p %{SOURCE7} $RPM_BUILD_ROOT%{systemdunitdir}/cronjob-mdadm.service
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -153,14 +157,14 @@ rm -rf $RPM_BUILD_ROOT
 %post
 /sbin/chkconfig --add %{name}
 %service mdadm restart "RAID monitoring"
-%systemd_post mdadm.service
+%systemd_post mdadm.service cronjob-mdadm.timer
 
 %preun
 if [ "$1" = "0" ]; then
 	%service mdadm stop
 	/sbin/chkconfig --del mdadm
 fi
-%systemd_preun mdadm.service
+%systemd_preun mdadm.service cronjob-mdadm.timer
 
 %postun
 /sbin/ldconfig
@@ -168,6 +172,9 @@ fi
 
 %triggerpostun -- %{name} < 4.0-2
 %systemd_trigger mdadm.service
+
+%triggerpostun -- %{name} < 4.0-3
+%systemd_service_enable cronjob-mdadm.timer
 
 %files
 %defattr(644,root,root,755)
@@ -177,6 +184,8 @@ fi
 %attr(755,root,root) %{_sbindir}/mdassemble
 %attr(755,root,root) %{_sbindir}/mdctl
 %{systemdunitdir}/mdadm.service
+%{systemdunitdir}/cronjob-mdadm.service
+%{systemdunitdir}/cronjob-mdadm.timer
 %attr(640,root,root) %config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/mdadm.conf
 %{_mandir}/man5/mdadm.conf.5*
 %{_mandir}/man8/mdadm.8*
