@@ -8,7 +8,7 @@ Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
 Version:	4.0
-Release:	3
+Release:	4
 License:	GPL v2+
 Group:		Base
 Source0:	https://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.xz
@@ -17,9 +17,8 @@ Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.cron
 Source4:	%{name}-checkarray
-Source5:	%{name}.service
-Source6:	cronjob-%{name}.timer
-Source7:	cronjob-%{name}.service
+Source5:	cronjob-%{name}.timer
+Source6:	cronjob-%{name}.service
 URL:		https://www.kernel.org/pub/linux/utils/raid/mdadm/
 BuildRequires:	dlm-devel
 BuildRequires:	groff
@@ -123,6 +122,9 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8}} \
 	$RPM_BUILD_ROOT{/etc/{rc.d/init.d,sysconfig,cron.d},%{systemdunitdir}}
 
+%{__make} install install-udev install-systemd \
+	DESTDIR=$RPM_BUILD_ROOT
+
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_libdir}/initrd
 install -p initrd-mdadm $RPM_BUILD_ROOT%{_libdir}/initrd/mdadm
@@ -131,10 +133,7 @@ ln -s mdadm $RPM_BUILD_ROOT%{_libdir}/initrd/mdctl
 %endif
 
 install -p regular-mdassemble $RPM_BUILD_ROOT%{_sbindir}/mdassemble
-install -p mdadm $RPM_BUILD_ROOT%{_sbindir}
-
-cp -p md*.5 $RPM_BUILD_ROOT%{_mandir}/man5
-cp -p md*.8 $RPM_BUILD_ROOT%{_mandir}/man8
+cp -p mdassemble.8 $RPM_BUILD_ROOT%{_mandir}/man8
 
 cp -p mdadm.conf-example $RPM_BUILD_ROOT%{_sysconfdir}/mdadm.conf
 
@@ -145,11 +144,8 @@ cp -p %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/cron.d/mdadm-checkarray
 install -p %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/mdadm-checkarray
-
-# Install systemd units
-install -p %{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}/mdadm.service
-install -p %{SOURCE6} $RPM_BUILD_ROOT%{systemdunitdir}/cronjob-mdadm.timer
-install -p %{SOURCE7} $RPM_BUILD_ROOT%{systemdunitdir}/cronjob-mdadm.service
+install -p %{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}/cronjob-mdadm.timer
+install -p %{SOURCE6} $RPM_BUILD_ROOT%{systemdunitdir}/cronjob-mdadm.service
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -183,10 +179,19 @@ fi
 %attr(755,root,root) %{_sbindir}/mdadm-checkarray
 %attr(755,root,root) %{_sbindir}/mdassemble
 %attr(755,root,root) %{_sbindir}/mdctl
-%{systemdunitdir}/mdadm.service
+%attr(755,root,root) %{_sbindir}/mdmon
+%{systemdunitdir}-shutdown/mdadm.shutdown
+%{systemdunitdir}/mdadm-grow-continue@.service
+%{systemdunitdir}/mdadm-last-resort@.service
+%{systemdunitdir}/mdadm-last-resort@.timer
+%{systemdunitdir}/mdmon@.service
+%{systemdunitdir}/mdmonitor.service
 %{systemdunitdir}/cronjob-mdadm.service
 %{systemdunitdir}/cronjob-mdadm.timer
+/lib/udev/rules.d/63-md-raid-arrays.rules
+/lib/udev/rules.d/64-md-raid-assembly.rules
 %attr(640,root,root) %config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/mdadm.conf
+%{_mandir}/man4/md.4*
 %{_mandir}/man5/mdadm.conf.5*
 %{_mandir}/man8/mdadm.8*
 %{_mandir}/man8/mdassemble.8*
