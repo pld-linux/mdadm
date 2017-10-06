@@ -8,7 +8,7 @@ Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
 Version:	4.0
-Release:	4
+Release:	5
 License:	GPL v2+
 Group:		Base
 Source0:	https://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.xz
@@ -147,27 +147,26 @@ install -p %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/mdadm-checkarray
 install -p %{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}/cronjob-mdadm.timer
 install -p %{SOURCE6} $RPM_BUILD_ROOT%{systemdunitdir}/cronjob-mdadm.service
 
+ln -s /dev/null $RPM_BUILD_ROOT%{systemdunitdir}/mdadm.service
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/chkconfig --add %{name}
 %service mdadm restart "RAID monitoring"
-%systemd_post mdadm.service cronjob-mdadm.timer
+%systemd_post mdmonitor.service cronjob-mdadm.timer
 
 %preun
 if [ "$1" = "0" ]; then
 	%service mdadm stop
 	/sbin/chkconfig --del mdadm
 fi
-%systemd_preun mdadm.service cronjob-mdadm.timer
+%systemd_preun mdmonitor.service cronjob-mdadm.timer
 
 %postun
 /sbin/ldconfig
 %systemd_reload
-
-%triggerpostun -- %{name} < 4.0-2
-%systemd_trigger mdadm.service
 
 %triggerpostun -- %{name} < 4.0-3
 %systemd_service_enable cronjob-mdadm.timer
@@ -184,6 +183,7 @@ fi
 %{systemdunitdir}/mdadm-grow-continue@.service
 %{systemdunitdir}/mdadm-last-resort@.service
 %{systemdunitdir}/mdadm-last-resort@.timer
+%{systemdunitdir}/mdadm.service
 %{systemdunitdir}/mdmon@.service
 %{systemdunitdir}/mdmonitor.service
 %{systemdunitdir}/cronjob-mdadm.service
