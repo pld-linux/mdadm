@@ -22,7 +22,9 @@ Source6:	cronjob-%{name}.service
 URL:		https://www.kernel.org/pub/linux/utils/raid/mdadm/
 BuildRequires:	dlm-devel
 BuildRequires:	groff
-BuildRequires:	rpmbuild(macros) >= 1.213
+BuildRequires:	rpmbuild(macros) >= 1.671
+BuildRequires:	tar >= 1:1.22
+BuildRequires:	xz
 %if %{with initrd}
 	%if %{with dietlibc}
 BuildRequires:	dietlibc-static
@@ -30,9 +32,6 @@ BuildRequires:	dietlibc-static
 BuildRequires:	glibc-static
 	%endif
 %endif
-BuildRequires:	rpmbuild(macros) >= 1.671
-BuildRequires:	tar >= 1:1.22
-BuildRequires:	xz
 Requires(post,preun):	/sbin/chkconfig
 Requires:	/sbin/chkconfig
 Requires:	rc-scripts >= 0.4.2.4-2
