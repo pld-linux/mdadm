@@ -77,7 +77,7 @@ skonsolidowane na potrzeby initrd.
 %{__make} mdadm \
 	CC="diet %{__cc} %{rpmcflags} %{rpmcppflags} %{rpmldflags} -Os -static" \
 	CWFLAGS="-Wall"
-mv -f mdadm initrd-mdadm
+%{__mv} mdadm initrd-mdadm
 %{__make} clean
 diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmcppflags} %{rpmldflags} -Os -static \
 	-o initrd-mdassemble \
@@ -89,7 +89,7 @@ diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmcppflags}
 	CC="%{__cc}" \
 	CFLAGS="%{rpmcflags} %{rpmcppflags}" \
 	LDFLAGS="%{rpmldflags}"
-mv -f mdadm.static initrd-mdadm
+%{__mv} mdadm.static initrd-mdadm
 %{__make} clean
 %{__cc} -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmcppflags} %{rpmldflags} -DHAVE_STDINT_H -static \
 	-o initrd-mdassemble \
@@ -106,7 +106,7 @@ mv -f mdadm.static initrd-mdadm
 	CFLAGS="%{rpmcflags} %{rpmcppflags}" \
 	LDFLAGS="%{rpmldflags}" \
 	SYSCONFDIR="%{_sysconfdir}"
-mv mdassemble regular-mdassemble
+%{__mv} mdassemble regular-mdassemble
 %{__make} clean
 
 %{__make} all mdadm mdadm.8 \
