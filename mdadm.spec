@@ -7,12 +7,12 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
-Version:	4.0
-Release:	5
+Version:	4.1
+Release:	0.1
 License:	GPL v2+
 Group:		Base
 Source0:	https://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.xz
-# Source0-md5:	2cb4feffea9167ba71b5f346a0c0a40d
+# Source0-md5:	51bf3651bd73a06c413a2f964f299598
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.cron
@@ -78,36 +78,15 @@ skonsolidowane na potrzeby initrd.
 	CC="diet %{__cc} %{rpmcflags} %{rpmcppflags} %{rpmldflags} -Os -static" \
 	CWFLAGS="-Wall"
 %{__mv} mdadm initrd-mdadm
-%{__make} clean
-diet %{__cc} -DUCLIBC -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmcppflags} %{rpmldflags} -Os -static \
-	-o initrd-mdassemble \
-	mdassemble.c Assemble.c Manage.c config.c policy.c dlink.c util.c lib.c \
-	super0.c super1.c super-ddf.c super-intel.c sha1.c crc32.c sg_io.c mdstat.c \
-	platform-intel.c probe_roms.c sysfs.c super-mbr.c super-gpt.c mdopen.c maps.c xmalloc.c
 %else
 %{__make} mdadm.static \
 	CC="%{__cc}" \
 	CFLAGS="%{rpmcflags} %{rpmcppflags}" \
 	LDFLAGS="%{rpmldflags}"
 %{__mv} mdadm.static initrd-mdadm
-%{__make} clean
-%{__cc} -DMDASSEMBLE_AUTO -DMDASSEMBLE %{rpmcflags} %{rpmcppflags} %{rpmldflags} -DHAVE_STDINT_H -static \
-	-o initrd-mdassemble \
-	mdassemble.c Assemble.c Manage.c config.c policy.c dlink.c util.c lib.c \
-	super0.c super1.c super-ddf.c super-intel.c sha1.c crc32.c sg_io.c mdstat.c \
-	platform-intel.c probe_roms.c sysfs.c super-mbr.c super-gpt.c mdopen.c maps.c xmalloc.c
 %endif
 %{__make} clean
 %endif
-
-%{__make} mdassemble \
-	MDASSEMBLE_AUTO=1 \
-	CC="%{__cc}" \
-	CFLAGS="%{rpmcflags} %{rpmcppflags}" \
-	LDFLAGS="%{rpmldflags}" \
-	SYSCONFDIR="%{_sysconfdir}"
-%{__mv} mdassemble regular-mdassemble
-%{__make} clean
 
 %{__make} all mdadm mdadm.8 \
 	CC="%{__cc}" \
@@ -128,12 +107,8 @@ install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8}} \
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_libdir}/initrd
 install -p initrd-mdadm $RPM_BUILD_ROOT%{_libdir}/initrd/mdadm
-install -p initrd-mdassemble $RPM_BUILD_ROOT%{_libdir}/initrd/mdassemble
 ln -s mdadm $RPM_BUILD_ROOT%{_libdir}/initrd/mdctl
 %endif
-
-install -p regular-mdassemble $RPM_BUILD_ROOT%{_sbindir}/mdassemble
-cp -p mdassemble.8 $RPM_BUILD_ROOT%{_mandir}/man8
 
 cp -p mdadm.conf-example $RPM_BUILD_ROOT%{_sysconfdir}/mdadm.conf
 
@@ -176,7 +151,6 @@ fi
 %doc ANNOUNCE* ChangeLog TODO
 %attr(755,root,root) %{_sbindir}/mdadm
 %attr(755,root,root) %{_sbindir}/mdadm-checkarray
-%attr(755,root,root) %{_sbindir}/mdassemble
 %attr(755,root,root) %{_sbindir}/mdctl
 %attr(755,root,root) %{_sbindir}/mdmon
 %{systemdunitdir}-shutdown/mdadm.shutdown
@@ -188,13 +162,14 @@ fi
 %{systemdunitdir}/mdmonitor.service
 %{systemdunitdir}/cronjob-mdadm.service
 %{systemdunitdir}/cronjob-mdadm.timer
+/lib/udev/rules.d/01-md-raid-creating.rules
 /lib/udev/rules.d/63-md-raid-arrays.rules
 /lib/udev/rules.d/64-md-raid-assembly.rules
+/lib/udev/rules.d/69-md-clustered-confirm-device.rules
 %attr(640,root,root) %config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/mdadm.conf
 %{_mandir}/man4/md.4*
 %{_mandir}/man5/mdadm.conf.5*
 %{_mandir}/man8/mdadm.8*
-%{_mandir}/man8/mdassemble.8*
 %{_mandir}/man8/mdmon.8*
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/%{name}
@@ -204,6 +179,5 @@ fi
 %files initrd
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/initrd/mdadm
-%attr(755,root,root) %{_libdir}/initrd/mdassemble
 %attr(755,root,root) %{_libdir}/initrd/mdctl
 %endif
