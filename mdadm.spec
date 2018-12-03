@@ -8,7 +8,7 @@ Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
 Version:	4.0
-Release:	5
+Release:	6
 License:	GPL v2+
 Group:		Base
 Source0:	https://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.xz

@@ -9,5 +9,5 @@
 # the month is less than or equal to 7. Thus, only run on the first Sunday of
 # each month. crontab(5) sucks, unfortunately, in this regard; therefore this
 # hack (see debian#380425).
-57 0 * * 0 root [ $(date +\%d) -le 7 ] && /sbin/mdadm-checkarray --cron --all --quiet
+57 0 * * 0 root [ $(date +\%d) -le 7 ] && /sbin/mdadm-checkarray --cron --all --idle --quiet
 
