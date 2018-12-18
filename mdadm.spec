@@ -8,7 +8,7 @@ Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
 Version:	4.1
-Release:	0.1
+Release:	1
 License:	GPL v2+
 Group:		Base
 Source0:	https://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.xz
@@ -57,7 +57,7 @@ alternatywa dla pakietu raidtools.
 Summary:	Tool for maintaining software RAID devices - initrd version
 Summary(pl.UTF-8):	Narzędzie do obsługi programowych macierzy RAID, wersja dla initrd
 Group:		Base
-Conflicts:	geninitrd < 10000.10
+Conflicts:	geninitrd < 12787
 
 %description initrd
 Tool for maintaining software RAID devices - statically linked for
