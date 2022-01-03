@@ -7,12 +7,12 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
-Version:	4.1
-Release:	1
+Version:	4.2
+Release:	0.1
 License:	GPL v2+
 Group:		Base
 Source0:	https://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.xz
-# Source0-md5:	51bf3651bd73a06c413a2f964f299598
+# Source0-md5:	a304eb0a978ca81045620d06547050a6
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.cron
@@ -20,6 +20,7 @@ Source4:	%{name}-checkarray
 Source5:	cronjob-%{name}.timer
 Source6:	cronjob-%{name}.service
 URL:		https://www.kernel.org/pub/linux/utils/raid/mdadm/
+BuildRequires:	corosync-devel
 BuildRequires:	dlm-devel
 BuildRequires:	groff
 BuildRequires:	rpmbuild(macros) >= 1.671
@@ -161,6 +162,12 @@ fi
 %{systemdunitdir}/mdmonitor.service
 %{systemdunitdir}/cronjob-mdadm.service
 %{systemdunitdir}/cronjob-mdadm.timer
+%{systemdunitdir}/mdcheck_continue.service
+%{systemdunitdir}/mdcheck_continue.timer
+%{systemdunitdir}/mdcheck_start.service
+%{systemdunitdir}/mdcheck_start.timer
+%{systemdunitdir}/mdmonitor-oneshot.service
+%{systemdunitdir}/mdmonitor-oneshot.timer
 /lib/udev/rules.d/01-md-raid-creating.rules
 /lib/udev/rules.d/63-md-raid-arrays.rules
 /lib/udev/rules.d/64-md-raid-assembly.rules
