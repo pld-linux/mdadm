@@ -144,7 +144,7 @@ fi
 %systemd_reload
 
 %triggerpostun -- %{name} < 4.0-3
-%systemd_service_enable cronjob-mdadm.timer
+%systemd_trigger cronjob-mdadm.timer
 
 %files
 %defattr(644,root,root,755)
