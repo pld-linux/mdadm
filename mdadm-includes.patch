@@ -1,0 +1,10 @@
+--- mdadm-4.4/raid6check.c.orig	2024-12-13 10:54:53.000000000 +0100
++++ mdadm-4.4/raid6check.c	2025-09-28 20:13:58.831987773 +0200
+@@ -23,6 +23,7 @@
+  */
+ 
+ #include "mdadm.h"
++#include "xmalloc.h"
+ #include <stdint.h>
+ #include <sys/mman.h>
+ 

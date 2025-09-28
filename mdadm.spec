@@ -7,18 +7,19 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
-Version:	4.3
-Release:	2
+Version:	4.4
+Release:	1
 License:	GPL v2+
 Group:		Base
 Source0:	https://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.xz
-# Source0-md5:	a42def84e31734a529111394f2289e0e
+# Source0-md5:	c4bb72fdded17c9d74fcdd4a0896c97a
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.cron
 Source4:	%{name}-checkarray
 Source5:	cronjob-%{name}.timer
 Source6:	cronjob-%{name}.service
+Patch0:		%{name}-includes.patch
 URL:		https://www.kernel.org/pub/linux/utils/raid/mdadm/
 BuildRequires:	corosync-devel
 BuildRequires:	dlm-devel
@@ -70,6 +71,7 @@ skonsolidowane na potrzeby initrd.
 
 %prep
 %setup -q
+%patch -P0 -p1
 
 %build
 %if %{with initrd}
@@ -110,7 +112,7 @@ install -p initrd-mdadm $RPM_BUILD_ROOT%{_libdir}/initrd/mdadm
 ln -s mdadm $RPM_BUILD_ROOT%{_libdir}/initrd/mdctl
 %endif
 
-cp -p mdadm.conf-example $RPM_BUILD_ROOT%{_sysconfdir}/mdadm.conf
+cp -p documentation/mdadm.conf-example $RPM_BUILD_ROOT%{_sysconfdir}/mdadm.conf
 
 ln -s mdadm $RPM_BUILD_ROOT%{_sbindir}/mdctl
 
@@ -143,12 +145,12 @@ fi
 /sbin/ldconfig
 %systemd_reload
 
-%triggerpostun -- %{name} < 4.0-3
+%triggerpostun -- mdadm < 4.0-3
 %systemd_trigger cronjob-mdadm.timer
 
 %files
 %defattr(644,root,root,755)
-%doc ANNOUNCE* ChangeLog TODO
+%doc CHANGELOG.md MAINTAINERS.md README.md
 %attr(755,root,root) %{_sbindir}/mdadm
 %attr(755,root,root) %{_sbindir}/mdadm-checkarray
 %attr(755,root,root) %{_sbindir}/mdctl
