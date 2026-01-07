@@ -154,6 +154,8 @@ fi
 %attr(755,root,root) %{_sbindir}/mdadm-checkarray
 %attr(755,root,root) %{_sbindir}/mdctl
 %attr(755,root,root) %{_sbindir}/mdmon
+%dir %{_datadir}/mdadm
+%attr(755,root,root) %{_datadir}/mdadm/mdcheck
 %attr(755,root,root) %{systemdunitdir}-shutdown/mdadm.shutdown
 %{systemdunitdir}/mdadm-grow-continue@.service
 %{systemdunitdir}/mdadm-last-resort@.service
