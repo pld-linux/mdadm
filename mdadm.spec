@@ -7,19 +7,19 @@
 Summary:	Tool for creating and maintaining software RAID devices
 Summary(pl.UTF-8):	Narzędzie do tworzenia i obsługi programowych macierzy RAID
 Name:		mdadm
-Version:	4.4
+Version:	4.5
 Release:	1
 License:	GPL v2+
 Group:		Base
-Source0:	https://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.xz
-# Source0-md5:	c4bb72fdded17c9d74fcdd4a0896c97a
+#Source0:	https://www.kernel.org/pub/linux/utils/raid/mdadm/%{name}-%{version}.tar.xz
+Source0:	https://github.com/md-raid-utilities/mdadm/archive/refs/tags/%{name}-%{version}.tar.gz
+# Source0-md5:	6c61329903607faededde9a9d7248aab
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.cron
 Source4:	%{name}-checkarray
 Source5:	cronjob-%{name}.timer
 Source6:	cronjob-%{name}.service
-Patch0:		%{name}-includes.patch
 URL:		https://www.kernel.org/pub/linux/utils/raid/mdadm/
 BuildRequires:	corosync-devel
 BuildRequires:	dlm-devel
@@ -70,8 +70,7 @@ Narzędzie do zarządzania programowymi macierzami RAID - statycznie
 skonsolidowane na potrzeby initrd.
 
 %prep
-%setup -q
-%patch -P0 -p1
+%setup -q -n %{name}-%{name}-%{version}
 
 %build
 %if %{with initrd}
